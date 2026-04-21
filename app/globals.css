@@ -516,7 +516,7 @@ a {
 
 .product-quick-add {
   position: absolute;
-  bottom: 100%;
+  bottom: 0;
   left: 0;
   width: 100%;
   padding: 1rem;
@@ -526,12 +526,20 @@ a {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  transition: bottom 0.4s var(--transition-smooth);
+  transform: translateY(100%);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    transform 0.4s var(--transition-smooth),
+    opacity 0.3s var(--transition-smooth);
   cursor: pointer;
+  pointer-events: none;
 }
 
 .product-card:hover .product-quick-add {
-  bottom: 0;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .product-details {

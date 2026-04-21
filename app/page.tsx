@@ -5,10 +5,6 @@ import { useEffect, type FormEvent } from "react";
 
 export default function Home() {
   useEffect(() => {
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
     let cartCount = 0;
     let rafId = 0;
 
@@ -29,26 +25,6 @@ export default function Home() {
       onLoad();
     }
 
-    const onMouseMove = (event: MouseEvent) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-    };
-    document.addEventListener("mousemove", onMouseMove);
-
-    const animateCursor = () => {
-      if (cursor) {
-        const dx = mouseX - cursorX;
-        const dy = mouseY - cursorY;
-
-        cursorX += dx * 0.15;
-        cursorY += dy * 0.15;
-
-        cursor.style.left = `${cursorX - 10}px`;
-        cursor.style.top = `${cursorY - 10}px`;
-      }
-      rafId = window.requestAnimationFrame(animateCursor);
-    };
-    animateCursor();
 
     const hoverElements = document.querySelectorAll<HTMLElement>(
       "a, button, .collection-item, .product-card",
@@ -168,7 +144,6 @@ export default function Home() {
 
     return () => {
       window.removeEventListener("load", onLoad);
-      document.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
@@ -233,7 +208,7 @@ export default function Home() {
       </div>
 
       {/* Custom Cursor */}
-      <div className="cursor" />
+      {/* <div className="cursor" /> */}
 
       {/* Navigation */}
       <nav className="nav">
@@ -362,27 +337,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Marquee */}
-      <div className="marquee-section">
-        <div className="marquee">
-          <span className="marquee-item">New Arrivals</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Free Shipping Over ₱2,000</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Sustainable Fashion</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Made in Philippines</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">New Arrivals</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Free Shipping Over ₱2,000</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Sustainable Fashion</span>
-          <span className="marquee-dot" />
-          <span className="marquee-item">Made in Philippines</span>
-          <span className="marquee-dot" />
-        </div>
-      </div>
 
       {/* Featured Products Section */}
       <section className="featured" id="featured">
@@ -394,10 +348,9 @@ export default function Home() {
         </div>
         <div className="featured-grid">
           <div className="product-card reveal">
-            <span className="product-tag">New</span>
             <div className="product-image">
               <Image
-                src="/assets/white-shirt-1.jpg"
+                src="/assets/shop-partner-1.jpg"
                 width={600}
                 height={600}
                 alt="Basics Collection"
@@ -412,7 +365,7 @@ export default function Home() {
           <div className="product-card reveal">
             <div className="product-image">
               <Image
-                src="/assets/white-shirt-2.jpg"
+                src="/assets/shop-black-1.jpg"
                 width={600}
                 height={600}
                 alt="Basics Collection"
@@ -425,10 +378,9 @@ export default function Home() {
             </div>
           </div>
           <div className="product-card reveal">
-            <span className="product-tag">Sale</span>
             <div className="product-image">
               <Image
-                src="/assets/black-shirt-1.jpg"
+                src="/assets/shop-partner-2.jpg"
                 width={600}
                 height={600}
                 alt="Basics Collection"
@@ -446,7 +398,7 @@ export default function Home() {
           <div className="product-card reveal">
             <div className="product-image">
               <Image
-                src="/assets/black-shirt-2.jpg"
+                src="/assets/shop-white-1.jpg"
                 width={600}
                 height={600}
                 alt="Basics Collection"
@@ -489,7 +441,7 @@ export default function Home() {
             <div className="contact-item">
               <p className="contact-label">Email</p>
               <p className="contact-value">
-                <a href="mailto:groovyclothingph.com">groovyclothingph@gmail.com</a>
+                <a href="mailto:groovyclothingph@gmail.com">groovyclothingph@gmail.com</a>
               </p>
             </div>
             <div className="contact-item">
