@@ -84,21 +84,9 @@ export default function CollectionPage() {
     let cursorY = 0;
     let rafId = 0;
 
-    const loader = document.querySelector<HTMLElement>(".loader");
     const cursor = document.querySelector<HTMLElement>(".cursor");
     const nav = document.querySelector<HTMLElement>(".nav");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
-
-    const onLoad = () => {
-      window.setTimeout(() => {
-        loader?.classList.add("hidden");
-      }, 1500);
-    };
-
-    window.addEventListener("load", onLoad);
-    if (document.readyState === "complete") {
-      onLoad();
-    }
 
     const onMouseMove = (event: MouseEvent) => {
       mouseX = event.clientX;
@@ -198,7 +186,6 @@ export default function CollectionPage() {
     });
 
     return () => {
-      window.removeEventListener("load", onLoad);
       document.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
@@ -219,42 +206,10 @@ export default function CollectionPage() {
 
   return (
     <div>
-      {/* Loader */}
-      <div className="loader">
-        <div className="loader-text">
-          <span style={{ animationDelay: "0s" }}>g</span>
-          <span style={{ animationDelay: "0.1s" }}>r</span>
-          <span style={{ animationDelay: "0.2s" }}>o</span>
-          <span style={{ animationDelay: "0.3s" }}>o</span>
-          <span style={{ animationDelay: "0.4s" }}>v</span>
-          <span style={{ animationDelay: "0.5s" }}>y</span>
-          <span style={{ animationDelay: "0.6s" }}>.</span>
-        </div>
-      </div>
-
       {/* Custom Cursor */}
       <div className="cursor" />
 
       {/* Navigation */}
-      <nav className="nav">
-        <a href="/" className="nav-logo">
-          groovy.
-        </a>
-        <ul className="nav-links">
-          <li>
-            <a href="/#collection">Collection</a>
-          </li>
-          <li>
-            <a href="/#story">Our Story</a>
-          </li>
-          <li>
-            <a href="/#featured">Shop</a>
-          </li>
-          <li>
-            <a href="/#contact">Contact</a>
-          </li>
-        </ul>
-      </nav>
 
       {/* Page Hero */}
       <div className="collection-page-hero reveal">
