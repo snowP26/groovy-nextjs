@@ -85,7 +85,7 @@ export default function Home() {
 
       if (hero && scrolled < window.innerHeight) {
         hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-        hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.8);
+        hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
       }
 
       if (!nav) {
@@ -246,8 +246,10 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="hero" id="hero">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/assets/groovy-bg.svg" alt="" className="hero-bg" />
         <div className="hero-content">
-          <p className="hero-tagline">Homegrown Filipino Brand</p>
+          <p className="hero-tagline"></p>
           <h1 className="hero-title">
             <span>g</span>
             <span>r</span>
@@ -258,19 +260,18 @@ export default function Home() {
             <span>.</span>
           </h1>
           <p className="hero-subtitle">
-            Timeless pieces crafted with intention. Where comfort meets conscious
-            style.
+        
           </p>
           <div className="hero-cta">
-            <a href="#collection" className="btn">
+            <a href="/collection" className="btn">
               Explore Collection
             </a>
           </div>
         </div>
       </section>
 
-      {/* Collection Section */}
-      <section className="collection" id="collection">
+      {/* Latest Drop Section */}
+      <section className="featured" id="featured">
         <div className="section-header reveal">
           <div>
             <p className="section-subtitle">Latest Drop</p>
@@ -280,41 +281,67 @@ export default function Home() {
             View All
           </a>
         </div>
-        <div className="collection-grid">
-          <div className="collection-item reveal">
-            <Image
-              src="/assets/black-shirt-1.jpg"
-              width={600}
-              height={600}
-              alt="Basics Collection"
-            />
-            <div className="collection-info">
-              <h3 className="collection-name">Basics</h3>
-              <p className="collection-category">Everyday Essentials</p>
+        <div className="featured-grid">
+          <div className="product-card reveal">
+            <div className="product-image">
+              <Image
+                src="/assets/shop-partner-1.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
+              />
+            </div>
+            <div className="product-quick-add">Quick Add +</div>
+            <div className="product-details">
+              <h3 className="product-name">Embroidered Longsleeves</h3>
+              <p className="product-price">₱price</p>
             </div>
           </div>
-          <div className="collection-item reveal">
-            <Image
-              src="/assets/white-shirt-2.jpg"
-              width={600}
-              height={600}
-              alt="Basics Collection"
-            />
-            <div className="collection-info">
-              <h3 className="collection-name">Streetwear</h3>
-              <p className="collection-category">Urban Edge</p>
+          <div className="product-card reveal">
+            <div className="product-image">
+              <Image
+                src="/assets/shop-black-1.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
+              />
+            </div>
+            <div className="product-quick-add">Quick Add +</div>
+            <div className="product-details">
+              <h3 className="product-name">Graphic Tee — Black</h3>
+              <p className="product-price">₱price</p>
             </div>
           </div>
-          <div className="collection-item reveal">
-            <Image
-              src="/assets/white-shirt-1.jpg"
-              width={600}
-              height={600}
-              alt="Basics Collection"
-            />
-            <div className="collection-info">
-              <h3 className="collection-name">Minimalist</h3>
-              <p className="collection-category">Clean Lines</p>
+          <div className="product-card reveal">
+            <div className="product-image">
+              <Image
+                src="/assets/shop-partner-2.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
+              />
+            </div>
+            <div className="product-quick-add">Quick Add +</div>
+            <div className="product-details">
+              <h3 className="product-name">Embroidered Tee</h3>
+              <p className="product-price">
+                <span className="product-price">₱price</span>
+              </p>
+            </div>
+          </div>
+          <div className="product-card reveal">
+            <div className="product-image">
+              <Image
+                src="/assets/shop-white-1.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
+              />
+            </div>
+            <div className="product-quick-add">Quick Add +</div>
+            <div className="product-details">
+              <h3 className="product-name">Graphic Tee — White</h3>
+              <p className="product-price">₱price</p>
             </div>
           </div>
         </div>
@@ -347,82 +374,6 @@ export default function Home() {
             embracing growth — the feeling of doing something once thought
             impossible.
           </p>
-        </div>
-      </section>
-
-
-      {/* Featured Products Section */}
-      <section className="featured" id="featured">
-        <div className="section-header reveal">
-          <div>
-            <p className="section-subtitle">Best Sellers</p>
-            <h2 className="section-title">Featured Pieces</h2>
-          </div>
-        </div>
-        <div className="featured-grid">
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-1.jpg"
-                width={600}
-                height={600}
-                alt="Basics Collection"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">White Tee</h3>
-              <p className="product-price">₱899</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-black-1.jpg"
-                width={600}
-                height={600}
-                alt="Basics Collection"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Oversized Hoodie</h3>
-              <p className="product-price">₱1,899</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-2.jpg"
-                width={600}
-                height={600}
-                alt="Basics Collection"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Cargo Pants</h3>
-              <p className="product-price">
-                <span className="original">₱2,499</span>
-                <span className="sale">₱1,999</span>
-              </p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-white-1.jpg"
-                width={600}
-                height={600}
-                alt="Basics Collection"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Denim Jacket</h3>
-              <p className="product-price">₱2,899</p>
-            </div>
-          </div>
         </div>
       </section>
 
