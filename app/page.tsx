@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import Image from "next/image";
+import { useEffect, type FormEvent } from "react";
 
 export default function Home() {
   useEffect(() => {
@@ -300,7 +301,7 @@ export default function Home() {
         <div className="section-header reveal">
           <div>
             <p className="section-subtitle">Latest Drop</p>
-            <h2 className="section-title">The Essentials</h2>
+            <h2 className="section-title">(Collection Name)</h2>
           </div>
           <a href="#" className="btn">
             View All
@@ -308,8 +309,10 @@ export default function Home() {
         </div>
         <div className="collection-grid">
           <div className="collection-item reveal">
-            <img
-              src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&q=80"
+            <Image
+              src="/assets/black-shirt-1.jpg"
+              width={600}
+              height={600}
               alt="Basics Collection"
             />
             <div className="collection-info">
@@ -318,9 +321,11 @@ export default function Home() {
             </div>
           </div>
           <div className="collection-item reveal">
-            <img
-              src="https://images.unsplash.com/photo-1516826957135-700dedea698c?w=600&q=80"
-              alt="Streetwear Collection"
+            <Image
+              src="/assets/white-shirt-2.jpg"
+              width={600}
+              height={600}
+              alt="Basics Collection"
             />
             <div className="collection-info">
               <h3 className="collection-name">Streetwear</h3>
@@ -328,9 +333,11 @@ export default function Home() {
             </div>
           </div>
           <div className="collection-item reveal">
-            <img
-              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80"
-              alt="Minimalist Collection"
+            <Image
+              src="/assets/white-shirt-1.jpg"
+              width={600}
+              height={600}
+              alt="Basics Collection"
             />
             <div className="collection-info">
               <h3 className="collection-name">Minimalist</h3>
@@ -406,22 +413,26 @@ export default function Home() {
           <div className="product-card reveal">
             <span className="product-tag">New</span>
             <div className="product-image">
-              <img
-                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80"
-                alt="Classic Tee"
+              <Image
+                src="/assets/white-shirt-1.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
             <div className="product-details">
-              <h3 className="product-name">Classic Tee</h3>
+              <h3 className="product-name">White Tee</h3>
               <p className="product-price">₱899</p>
             </div>
           </div>
           <div className="product-card reveal">
             <div className="product-image">
-              <img
-                src="https://images.unsplash.com/photo-1622445275576-721325763afe?w=400&q=80"
-                alt="Oversized Hoodie"
+              <Image
+                src="/assets/white-shirt-2.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -433,9 +444,11 @@ export default function Home() {
           <div className="product-card reveal">
             <span className="product-tag">Sale</span>
             <div className="product-image">
-              <img
-                src="https://images.unsplash.com/photo-1584865288642-42078afe6942?w=400&q=80"
-                alt="Cargo Pants"
+              <Image
+                src="/assets/black-shirt-1.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -449,9 +462,11 @@ export default function Home() {
           </div>
           <div className="product-card reveal">
             <div className="product-image">
-              <img
-                src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&q=80"
-                alt="Denim Jacket"
+              <Image
+                src="/assets/black-shirt-2.jpg"
+                width={600}
+                height={600}
+                alt="Basics Collection"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
