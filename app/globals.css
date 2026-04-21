@@ -1073,3 +1073,118 @@ a {
     transform: translateY(0);
   }
 }
+
+/* ── Collection Page ─────────────────────────────────────── */
+
+.collection-page-hero {
+  padding: 12rem 3rem 4rem;
+  background-color: var(--color-cream);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.collection-page-hero-left {
+  position: sticky;
+  top: 10rem;
+}
+
+.collection-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-top: 1rem;
+}
+
+.collection-page-story {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--color-warm-gray);
+  font-size: 1rem;
+  line-height: 1.8;
+  padding-top: 0.25rem;
+}
+
+.collection-filters {
+  position: sticky;
+  top: 72px;
+  z-index: 100;
+  padding: 1.25rem 3rem;
+  background-color: var(--color-cream);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-black);
+  cursor: pointer;
+  transition:
+    border-color 0.3s var(--transition-smooth),
+    background-color 0.3s var(--transition-smooth),
+    color 0.3s var(--transition-smooth);
+}
+
+.filter-pill.active,
+.filter-pill:hover {
+  border-color: var(--color-black);
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.sort-select {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-black);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+}
+
+.collection-page-body {
+  padding: 4rem 3rem 8rem;
+  background-color: var(--color-cream);
+}
+
+@media (max-width: 768px) {
+  .collection-page-hero {
+    padding: 10rem 1.5rem 3rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .collection-page-hero-left {
+    position: static;
+  }
+
+  .collection-filters,
+  .collection-page-body {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}

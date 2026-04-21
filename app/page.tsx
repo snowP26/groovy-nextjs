@@ -66,7 +66,7 @@ export default function Home() {
         const listener = (event: Event) => {
           event.preventDefault();
           const href = anchor.getAttribute("href");
-          if (!href || href === "#") {
+          if (!href || !href.startsWith("#") || href === "#") {
             return;
           }
           const target = document.querySelector<HTMLElement>(href);
@@ -229,21 +229,6 @@ export default function Home() {
             <a href="#contact">Contact</a>
           </li>
         </ul>
-        <a href="#" className="nav-cart">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <path d="M16 10a4 4 0 0 1-8 0" />
-          </svg>
-          <span className="nav-cart-count">0</span>
-        </a>
       </nav>
 
       {/* Hero Section */}
@@ -276,9 +261,9 @@ export default function Home() {
         <div className="section-header reveal">
           <div>
             <p className="section-subtitle">Latest Drop</p>
-            <h2 className="section-title">(Collection Name)</h2>
+            <h2 className="section-title">Metamorphosis</h2>
           </div>
-          <a href="#" className="btn">
+          <a href="/collection" className="btn">
             View All
           </a>
         </div>
@@ -332,25 +317,23 @@ export default function Home() {
         </div>
         <div className="story-content reveal">
           <p className="story-eyebrow">Our Story</p>
-          <h2 className="story-title">Born from the streets of Manila</h2>
+          <h2 className="story-title">Built on growth, worn with purpose</h2>
           <p className="story-text">
-            groovy. started as a passion project in 2024, born from the belief
-            that great style shouldn't compromise comfort or conscience. We create
-            pieces that feel as good as they look-clothing that moves with you
-            through life's everyday moments.
+            Groovy began in 2019 as a creative outlet, translating ideas into
+            tangible pieces. Over time, it evolved into something more personal,
+            shaped by emotion and lived experiences. As the brand grew, it became
+            clear that it was never meant to exist in isolation, but to connect
+            and resonate beyond itself.
           </p>
           <blockquote className="story-quote">
-            "Fashion is not about fitting in. It's about feeling like yourself."
+            "Stepping out of your comfort zone — the feeling of doing something
+            once thought impossible."
           </blockquote>
           <p className="story-text">
-            Every piece is thoughtfully designed and ethically produced, using
-            sustainable materials whenever possible. We're not just building a
-            brand-we're building a community of individuals who value authenticity
-            over trends.
+            At its core, Groovy stands for stepping out of one's comfort zone and
+            embracing growth — the feeling of doing something once thought
+            impossible.
           </p>
-          <a href="#" className="btn">
-            Learn More
-          </a>
         </div>
       </section>
 
