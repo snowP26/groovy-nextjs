@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type FormEvent } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
@@ -192,7 +192,7 @@ export default function Home() {
     };
   }, []);
 
-  const handleNewsletterSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleNewsletterSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -213,25 +213,6 @@ export default function Home() {
     window.setTimeout(() => {
       button.textContent = originalText;
       button.style.backgroundColor = "";
-    }, 2000);
-  };
-
-  const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const button = form.querySelector<HTMLButtonElement>(".submit-btn");
-
-    if (!button) {
-      return;
-    }
-
-    const originalText = button.textContent;
-    button.textContent = "Message Sent!";
-    form.reset();
-
-    window.setTimeout(() => {
-      button.textContent = originalText;
     }, 2000);
   };
 
@@ -542,23 +523,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <form className="contact-form reveal" onSubmit={handleContactSubmit}>
-          <div className="form-group">
-            <input type="text" className="form-input" placeholder=" " required />
-            <label className="form-label">Your Name</label>
-          </div>
-          <div className="form-group">
-            <input type="email" className="form-input" placeholder=" " required />
-            <label className="form-label">Your Email</label>
-          </div>
-          <div className="form-group">
-            <textarea className="form-textarea" placeholder=" " required />
-            <label className="form-label">Your Message</label>
-          </div>
-          <button type="submit" className="submit-btn">
-            Send Message
-          </button>
-        </form>
       </section>
     </div>
   );
