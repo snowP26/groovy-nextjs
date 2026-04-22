@@ -1,19 +1,51 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, type FormEvent } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import Header from "./components/header";
 import Swal from "sweetalert2";
 
 const CONTACT_EMAIL = "groovyclothingph@gmail.com";
 
+const FAQS = [
+  {
+    q: "What size should I get?",
+    a: "We recommend checking our Size Guide page for detailed measurements before placing your order. If you're in between sizes, we suggest sizing up for a more relaxed fit.",
+  },
+  {
+    q: "Are your items available for pre-order?",
+    a: "Some releases may be limited or made available through pre-order. This will always be indicated in the product description or announcement posts.",
+  },
+  {
+    q: "How long does shipping take?",
+    a: "Orders are typically processed within 1–3 business days. Delivery time depends on your location, but usually takes 2–7 business days within the Philippines.",
+  },
+  {
+    q: "Do you accept returns or exchanges?",
+    a: "We only allow exchanges for defective or incorrect items. Please contact us within 48 hours of receiving your order.",
+  },
+  {
+    q: "Can I cancel or change my order?",
+    a: "Orders cannot be changed or cancelled once they have been processed. Please double-check your details before checkout.",
+  },
+  {
+    q: "What payment methods do you accept?",
+    a: "We accept GCash, bank transfer, and other payment methods indicated at checkout.",
+  },
+  {
+    q: "How do I track my order?",
+    a: "Tracking details will be sent via email or message once your order has been shipped.",
+  },
+];
+
 export default function Home() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   useEffect(() => {
     let cartCount = 0;
     let rafId = 0;
 
     const loader = document.querySelector<HTMLElement>(".loader");
-    const cursor = document.querySelector<HTMLElement>(".cursor");
     const nav = document.querySelector<HTMLElement>(".nav");
     const hero = document.querySelector<HTMLElement>(".hero-content");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
@@ -30,21 +62,6 @@ export default function Home() {
     }
 
 
-    const hoverElements = document.querySelectorAll<HTMLElement>(
-      "a, button, .collection-item, .product-card",
-    );
-    const hoverListeners: Array<{
-      element: HTMLElement;
-      enter: EventListener;
-      leave: EventListener;
-    }> = [];
-    hoverElements.forEach((element) => {
-      const enter = () => cursor?.classList.add("hover");
-      const leave = () => cursor?.classList.remove("hover");
-      element.addEventListener("mouseenter", enter);
-      element.addEventListener("mouseleave", leave);
-      hoverListeners.push({ element, enter, leave });
-    });
 
     const revealObserver = new IntersectionObserver(
       (entries) => {
@@ -152,11 +169,6 @@ export default function Home() {
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
 
-      hoverListeners.forEach(({ element, enter, leave }) => {
-        element.removeEventListener("mouseenter", enter);
-        element.removeEventListener("mouseleave", leave);
-      });
-
       anchorListeners.forEach(({ element, listener }) => {
         element.removeEventListener("click", listener);
       });
@@ -171,30 +183,6 @@ export default function Home() {
       });
     };
   }, []);
-
-  const handleNewsletterSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const input = form.querySelector<HTMLInputElement>("input");
-    const button = form.querySelector<HTMLButtonElement>("button");
-
-    if (!button) {
-      return;
-    }
-
-    const originalText = button.textContent;
-    button.textContent = "Subscribed!";
-    button.style.backgroundColor = "var(--color-accent)";
-    if (input) {
-      input.value = "";
-    }
-
-    window.setTimeout(() => {
-      button.textContent = originalText;
-      button.style.backgroundColor = "";
-    }, 2000);
-  };
 
   const copyEmailToClipboard = async (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -239,8 +227,6 @@ export default function Home() {
     <div>
       
 
-      {/* Custom Cursor */}
-      {/* <div className="cursor" /> */}
 
 
 
@@ -263,23 +249,23 @@ export default function Home() {
         
           </p>
           <div className="hero-cta">
-            <a href="/collection" className="btn">
+            <Link href="/collection" className="btn">
               Explore Collection
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Latest Drop Section */}
-      <section className="featured" id="featured">
+      <section className="featured" id="collection">
         <div className="section-header reveal">
           <div>
             <p className="section-subtitle">Latest Drop</p>
             <h2 className="section-title">Metamorphosis</h2>
           </div>
-          <a href="/collection" className="btn">
+          <Link href="/collection" className="btn">
             View All
-          </a>
+          </Link>
         </div>
         <div className="featured-grid">
           <div className="product-card reveal">
@@ -288,7 +274,9 @@ export default function Home() {
                 src="/assets/shop-partner-1.jpg"
                 width={600}
                 height={600}
-                alt="Basics Collection"
+                alt="Embroidered Longsleeves"
+                quality={80}
+                sizes="(max-width: 768px) 100vw, 25vw"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -303,7 +291,9 @@ export default function Home() {
                 src="/assets/shop-black-1.jpg"
                 width={600}
                 height={600}
-                alt="Basics Collection"
+                alt="Graphic Tee Black"
+                quality={80}
+                sizes="(max-width: 768px) 100vw, 25vw"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -318,7 +308,9 @@ export default function Home() {
                 src="/assets/shop-partner-2.jpg"
                 width={600}
                 height={600}
-                alt="Basics Collection"
+                alt="Embroidered Tee"
+                quality={80}
+                sizes="(max-width: 768px) 100vw, 25vw"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -335,7 +327,9 @@ export default function Home() {
                 src="/assets/shop-white-1.jpg"
                 width={600}
                 height={600}
-                alt="Basics Collection"
+                alt="Graphic Tee White"
+                quality={80}
+                sizes="(max-width: 768px) 100vw, 25vw"
               />
             </div>
             <div className="product-quick-add">Quick Add +</div>
@@ -351,8 +345,8 @@ export default function Home() {
       <section className="story" id="story">
         <div className="story-image reveal">
           <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"
-            alt="Our Story"
+            src="/assets/groovy-logo.svg"
+            alt="Groovy Logo"
           />
         </div>
         <div className="story-content reveal">
@@ -377,24 +371,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="newsletter reveal">
-        <h2 className="newsletter-title">Stay in the Loop</h2>
-        <p className="newsletter-text">
-          Subscribe to get early access to new drops, exclusive offers, and
-          styling tips.
-        </p>
-        <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
-          <input
-            type="email"
-            className="newsletter-input"
-            placeholder="Enter your email"
-            required
-          />
-          <button type="submit" className="newsletter-btn">
-            Subscribe
-          </button>
-        </form>
+      {/* FAQ Section */}
+      <section className="faq reveal" id="faq">
+        <div className="faq-inner">
+          <div className="faq-header">
+            <p className="section-subtitle">FAQ</p>
+            <h2 className="faq-title">Frequently Asked Questions</h2>
+          </div>
+          <div className="faq-list">
+            {FAQS.map((item, i) => (
+              <div
+                key={i}
+                className={`faq-item${openFaq === i ? " open" : ""}`}
+              >
+                <button
+                  className="faq-question"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                >
+                  <span>{item.q}</span>
+                  <span className="faq-icon" aria-hidden="true" />
+                </button>
+                <div className="faq-answer">
+                  <div className="faq-answer-inner">
+                    <p>{item.a}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Contact Section */}
@@ -411,14 +417,8 @@ export default function Home() {
               </p>
             </div>
             <div className="contact-item">
-              <p className="contact-label">Phone</p>
-              <p className="contact-value">
-                <a href="tel:+639171234567">+63 917 123 4567</a>
-              </p>
-            </div>
-            <div className="contact-item">
               <p className="contact-label">Location</p>
-              <p className="contact-value">Manila, Philippines</p>
+              <p className="contact-value">Naga City, Philippines</p>
             </div>
           </div>
           <div className="social-links">
