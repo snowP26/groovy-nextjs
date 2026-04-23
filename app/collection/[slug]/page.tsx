@@ -12,6 +12,7 @@ const PRODUCT_BY_SLUG: Record<
     string,
     {
         name: string;
+        price: number;
         images: Array<{
             src: string;
             alt: string;
@@ -21,6 +22,7 @@ const PRODUCT_BY_SLUG: Record<
 > = {
     "embroidered-longsleeves": {
         name: "Embroidered Longsleeves",
+        price: 1290,
         images: [
             { src: "/assets/longsleeve/1.jpg", alt: "Embroidered Longsleeves black & white" },
             { src: "/assets/longsleeve/2.jpg", alt: "Embroidered Longsleeves black" },
@@ -30,6 +32,7 @@ const PRODUCT_BY_SLUG: Record<
     },
     "embroidered-tee": {
         name: "Embroidered Tee",
+        price: 790,
         images: [
             { src: "/assets/embroid/4.jpg", alt: "Embroidered Tee Together" },
             { src: "/assets/embroid/1.jpg", alt: "Embroidered Tee black" },
@@ -40,6 +43,7 @@ const PRODUCT_BY_SLUG: Record<
     },
     "graphic-tee": {
         name: "Graphic Tee",
+        price: 850,
         images: [
             { src: "/assets/graphic/1.jpg", alt: "Graphic Tee black" },
             { src: "/assets/graphic/5.jpg", alt: "Graphic Tee white product" },
@@ -51,11 +55,12 @@ const PRODUCT_BY_SLUG: Record<
     },
     "plaid-polo": {
         name: "Plaid Polo",
+        price: 1650,
         images: [
             { src: "/assets/plaid/1.jpg", alt: "Plaid Polo female" },
             { src: "/assets/plaid/4.jpg", alt: "Plaid Polo long male" },
-            { src: "/assets/plaid/2.jpg", alt: "Plaid Polo long male" },
-            { src: "/assets/plaid/3.jpg", alt: "Plaid Polo long male" },
+            { src: "/assets/plaid/2.jpg", alt: "Plaid Longsleeves" },
+            { src: "/assets/plaid/3.jpg", alt: "Plaid Longsleeves" },
         ],
         sizes: ["S", "M", "L", "XL"],
     },
@@ -128,6 +133,10 @@ export default function Product() {
     const activeImage = product.images[activeImageIndex] ?? product.images[0];
     const showCarouselControls = totalImages > 1;
 
+    const isLongsleevesVariant = normalizedSlug === "plaid-polo" && activeImageIndex >= 2;
+    const displayName = isLongsleevesVariant ? "Plaid Longsleeves" : product.name;
+    const displayPrice = isLongsleevesVariant ? 1950 : product.price;
+
     const goToPreviousImage = () => {
         setActiveImageIndex((prev) => (prev === 0 ? totalImages - 1 : prev - 1));
     };
@@ -194,7 +203,8 @@ export default function Product() {
 
                 <div className="product-scaffold-content">
                     <p className="section-subtitle">Product</p>
-                    <h1 className="product-scaffold-title">{product.name}</h1>
+                    <h1 className="product-scaffold-title">{displayName}</h1>
+                    <p className="product-scaffold-price">₱{displayPrice.toLocaleString()}</p>
                     {showCarouselControls ? (
                         <p className="product-carousel-count">
                             {activeImageIndex + 1} / {totalImages}

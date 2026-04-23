@@ -109,11 +109,12 @@ export default function CollectionPage() {
 
   return (
     <div>
-      {/* Navigation */}
-
       {/* Page Hero */}
       <div className="collection-page-hero reveal">
         <div className="collection-page-hero-left">
+          <Link href="/" className="collection-back-link">
+            ← back
+          </Link>
           <p className="section-subtitle">Latest Drop</p>
           <h1 className="collection-page-title">Metamorphosis</h1>
         </div>

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Header from "./components/header";
 import ProductCard from "./components/product-card";
 import Swal from "sweetalert2";
 
