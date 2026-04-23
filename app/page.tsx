@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Header from "./components/header";
+import ProductCard from "./components/product-card";
 import Swal from "sweetalert2";
 
 const CONTACT_EMAIL = "groovyclothingph@gmail.com";
@@ -39,6 +39,33 @@ const FAQS = [
   },
 ];
 
+const FEATURED_PRODUCTS = [
+  {
+    src: "/assets/shop-partner-1.jpg",
+    alt: "Embroidered Longsleeves",
+    name: "Embroidered Longsleeves",
+    price: "₱1290.00",
+  },
+  {
+    src: "/assets/shop-black-1.jpg",
+    alt: "Graphic Tee Black",
+    name: "Graphic Tee — Black",
+    price: "₱850.00",
+  },
+  {
+    src: "/assets/shop-partner-2.jpg",
+    alt: "Embroidered Tee",
+    name: "Embroidered Tee",
+    price: "₱790.00",
+  },
+  {
+    src: "/assets/shop-white-1.jpg",
+    alt: "Graphic Tee White",
+    name: "Graphic Tee — White",
+    price: "₱850.00",
+  },
+];
+
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   useEffect(() => {
@@ -46,7 +73,6 @@ export default function Home() {
     let rafId = 0;
 
     const loader = document.querySelector<HTMLElement>(".loader");
-    const nav = document.querySelector<HTMLElement>(".nav");
     const hero = document.querySelector<HTMLElement>(".hero-content");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
 
@@ -105,19 +131,6 @@ export default function Home() {
         hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
       }
 
-      if (!nav) {
-        return;
-      }
-
-      if (window.scrollY > 100) {
-        nav.style.background = "rgba(237, 235, 231, 0.88)";
-        nav.style.backdropFilter = "blur(12px)";
-        nav.style.borderBottom = "1px solid rgba(28,26,23,0.08)";
-      } else {
-        nav.style.background = "transparent";
-        nav.style.backdropFilter = "none";
-        nav.style.borderBottom = "none";
-      }
     };
     window.addEventListener("scroll", onScroll);
 
@@ -225,7 +238,7 @@ export default function Home() {
 
   return (
     <div>
-      
+
 
 
 
@@ -246,7 +259,7 @@ export default function Home() {
             <span>.</span>
           </h1>
           <p className="hero-subtitle">
-        
+
           </p>
           <div className="hero-cta">
             <Link href="/collection" className="btn">
@@ -268,83 +281,23 @@ export default function Home() {
           </Link>
         </div>
         <div className="featured-grid">
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-1.jpg"
-                width={600}
-                height={600}
-                alt="Embroidered Longsleeves"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Embroidered Longsleeves</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-black-1.jpg"
-                width={600}
-                height={600}
-                alt="Graphic Tee Black"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Graphic Tee — Black</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-2.jpg"
-                width={600}
-                height={600}
-                alt="Embroidered Tee"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Embroidered Tee</h3>
-              <p className="product-price">
-                <span className="product-price">₱price</span>
-              </p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-white-1.jpg"
-                width={600}
-                height={600}
-                alt="Graphic Tee White"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Graphic Tee — White</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
+          {FEATURED_PRODUCTS.map((product) => (
+            <ProductCard
+              key={product.src}
+              src={product.src}
+              alt={product.alt}
+              name={product.name}
+              price={product.price}
+            />
+          ))}
         </div>
       </section>
 
       {/* Brand Story Section */}
       <section className="story" id="story">
         <div className="story-image reveal">
-          <img
+          <Image
+            fill
             src="/assets/groovy-logo.svg"
             alt="Groovy Logo"
           />
@@ -433,7 +386,7 @@ export default function Home() {
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
               </svg>
             </a>
-            <a 
+            <a
               href="https://www.facebook.com/groovyclothing4400"
               className="social-link"
               aria-label="Instagram"

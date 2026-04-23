@@ -2,19 +2,22 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const ITEMS = [
   {
     name: "Embroidered Longsleeves",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "embroidered-longsleeves",
     image: "/assets/shop-partner-1.jpg",
     alt: "Embroidered Longsleeves",
   },
   {
-    name: "Graphic Tee — Black",
+    name: "Graphic Tee",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "graphic-tee",
     image: "/assets/shop-black-1.jpg",
     alt: "Graphic Tee Black",
   },
@@ -22,15 +25,17 @@ const ITEMS = [
     name: "Embroidered Tee",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "embroidered-tee",
     image: "/assets/shop-partner-2.jpg",
     alt: "Embroidered Tee",
   },
   {
-    name: "Graphic Tee — White",
+    name: "Plaid Polo",
     category: "Metamorphosis",
     tag: "Tops",
-    image: "/assets/shop-white-1.jpg",
-    alt: "Graphic Tee White",
+    slug: "plaid-polo",
+    image: "/assets/plaid-polo-female-1.jpg",
+    alt: "Plaid Polo",
   },
 ];
 
@@ -39,7 +44,6 @@ export default function CollectionPage() {
   useEffect(() => {
     let rafId = 0;
 
-    const nav = document.querySelector<HTMLElement>(".nav");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
 
     const revealObserver = new IntersectionObserver(
@@ -69,20 +73,6 @@ export default function CollectionPage() {
       anchorListeners.push({ element: anchor, listener });
     });
 
-    const onScroll = () => {
-      if (!nav) return;
-      if (window.scrollY > 100) {
-        nav.style.background = "rgba(237, 235, 231, 0.88)";
-        nav.style.backdropFilter = "blur(12px)";
-        nav.style.borderBottom = "1px solid rgba(28,26,23,0.08)";
-      } else {
-        nav.style.background = "transparent";
-        nav.style.backdropFilter = "none";
-        nav.style.borderBottom = "none";
-      }
-    };
-    window.addEventListener("scroll", onScroll);
-
     const magneticListeners: Array<{
       element: HTMLElement;
       move: EventListener;
@@ -105,7 +95,6 @@ export default function CollectionPage() {
     });
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
       anchorListeners.forEach(({ element, listener }) => {
@@ -120,11 +109,12 @@ export default function CollectionPage() {
 
   return (
     <div>
-      {/* Navigation */}
-
       {/* Page Hero */}
       <div className="collection-page-hero reveal">
         <div className="collection-page-hero-left">
+          <Link href="/" className="collection-back-link">
+            ← back
+          </Link>
           <p className="section-subtitle">Latest Drop</p>
           <h1 className="collection-page-title">Metamorphosis</h1>
         </div>
@@ -147,8 +137,8 @@ export default function CollectionPage() {
       {/* Collection Grid */}
       <div className="collection-page-body">
         <div className="collection-grid">
-          {ITEMS.map((item) => (
-            <div key={item.name} className="collection-item reveal">
+          {ITEMS.map((item, index) => (
+            <Link key={`${item.slug}-${index}`} href={`/collection/${item.slug}`} className="collection-item reveal">
               <div className="collection-item-image">
                 <Image src={item.image} alt={item.alt} width={600} height={600} quality={80} sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
@@ -156,7 +146,7 @@ export default function CollectionPage() {
                 <h3 className="collection-name">{item.name}</h3>
                 <p className="collection-category">{item.category}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
