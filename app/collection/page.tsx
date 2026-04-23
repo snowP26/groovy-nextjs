@@ -34,7 +34,7 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "plaid-polo",
-    image: "/assets/plaid-polo-female-1.jpg",
+    image: "/assets/plaid/2.jpg",
     alt: "Plaid Polo",
   },
 ];
