@@ -43,26 +43,6 @@ body {
   cursor: default;
 }
 
-/* Custom Cursor */
-.cursor {
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--color-black);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transition:
-    transform 0.15s var(--transition-smooth),
-    background-color 0.15s var(--transition-smooth),
-    border-color 0.15s var(--transition-smooth);
-  mix-blend-mode: multiply;
-}
-
-.cursor.hover {
-  transform: scale(2);
-  background-color: var(--color-black);
-}
 
 /* Selection */
 ::selection {
@@ -110,13 +90,17 @@ a {
   left: 0;
   width: 100%;
   padding: 1.5rem 3rem;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   z-index: 1000;
   transition:
     background 0.4s var(--transition-smooth),
     backdrop-filter 0.4s var(--transition-smooth);
+}
+
+.nav-links {
+  justify-self: center;
 }
 
 .nav-logo {
@@ -365,45 +349,35 @@ a {
 }
 
 .collection-item {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 3/4;
-  background-color: var(--color-black);
+  background-color: var(--color-surface);
 }
 
-.collection-item img {
+.collection-item-image {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background-color: #e8e6e2;
+}
+
+.collection-item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition:
-    transform 0.8s var(--transition-smooth),
-    filter 0.4s var(--transition-smooth);
+  transition: transform 0.6s var(--transition-smooth);
 }
 
-.collection-item:hover img {
-  transform: scale(1.05);
-  filter: brightness(0.7);
+.collection-item:hover .collection-item-image img {
+  transform: scale(1.04);
 }
 
 .collection-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 2rem;
-  color: var(--color-white);
-  transform: translateY(100%);
-  transition: transform 0.5s var(--transition-smooth);
-}
-
-.collection-item:hover .collection-info {
-  transform: translateY(0);
+  padding: 1.25rem;
 }
 
 .collection-name {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  color: var(--color-black);
 }
 
 .collection-category {
@@ -448,7 +422,8 @@ a {
 .story-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 2rem;
   filter: grayscale(20%);
   transition: filter 0.5s var(--transition-smooth);
 }
@@ -625,72 +600,117 @@ a {
   margin: auto 0;
 }
 
-/* Newsletter Section */
-.newsletter {
+/* FAQ Section */
+.faq {
   padding: 8rem 3rem;
-  text-align: center;
   background-color: var(--color-cream);
-  color: var(--color-black);
 }
 
-.newsletter-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  margin-bottom: 1rem;
-}
-
-.newsletter-text {
-  color: var(--color-warm-gray);
-  max-width: 450px;
-  margin: 0 auto 2.5rem;
-}
-
-.newsletter-form {
-  display: flex;
-  max-width: 500px;
+.faq-inner {
+  max-width: 760px;
   margin: 0 auto;
-  gap: 0;
 }
 
-.newsletter-input {
-  flex: 1;
-  padding: 1rem 1.5rem;
-  border: 1px solid var(--color-black);
-  border-right: none;
+.faq-header {
+  margin-bottom: 4rem;
+}
+
+.faq-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-top: 0.75rem;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
   background: transparent;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
   color: var(--color-black);
-  outline: none;
-  transition: border-color 0.3s var(--transition-smooth);
-}
-
-.newsletter-input:focus {
-  border-color: var(--color-accent);
-}
-
-.newsletter-input::placeholder {
-  color: var(--color-warm-gray);
-}
-
-.newsletter-btn {
-  padding: 1rem 2rem;
-  background-color: var(--color-black);
-  color: var(--color-white);
-  border: 1px solid var(--color-black);
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
+  text-align: left;
   cursor: pointer;
-  transition:
-    background-color 0.3s var(--transition-smooth),
-    color 0.3s var(--transition-smooth);
+  transition: color 0.3s var(--transition-smooth);
 }
 
-.newsletter-btn:hover {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-black);
+.faq-question:hover {
+  color: var(--color-accent);
+}
+
+.faq-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  position: relative;
+}
+
+.faq-icon::before,
+.faq-icon::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 1px;
+  background-color: currentColor;
+  top: 50%;
+  transition: transform 0.35s var(--transition-smooth);
+}
+
+.faq-icon::before {
+  left: 0;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.faq-icon::after {
+  right: 0;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.faq-item.open .faq-icon::before {
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+.faq-item.open .faq-icon::after {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--transition-smooth);
+}
+
+.faq-item.open .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
+}
+
+.faq-answer-inner > p {
+  color: var(--color-warm-gray);
+  line-height: 1.8;
+  padding-bottom: 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .faq {
+    padding: 5rem 1.5rem;
+  }
 }
 
 /* Contact Section */
@@ -1007,7 +1027,6 @@ a {
 
   .collection,
   .featured,
-  .newsletter,
   .contact {
     padding: 5rem 1.5rem;
   }
@@ -1020,23 +1039,13 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .newsletter-form {
-    flex-direction: column;
-  }
-
-  .newsletter-input {
-    border-right: 1px solid var(--color-black);
-  }
-
   .footer {
     flex-direction: column;
     gap: 1.5rem;
     text-align: center;
   }
 
-  .cursor {
-    display: none;
-  }
+
 }
 
 /* Loading Screen */
