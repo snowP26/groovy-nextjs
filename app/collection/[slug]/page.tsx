@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 const INSTAGRAM_ORDER_LINK = "https://www.instagram.com/direct/t/110039370511793";
 const SIZE_CHART_IMAGE = "/assets/size-chart.jpg";
@@ -149,6 +152,36 @@ export default function Product() {
         <>
             <section className="product-scaffold">
                 <div className="product-scaffold-image product-carousel">
+                    <Breadcrumbs
+                        aria-label="breadcrumb"
+                        separator="/"
+                        sx={{
+                            mb: 0.6,
+                            "& .MuiLink-root, & .MuiTypography-root": {
+                                fontSize: "0.75rem",
+                                letterSpacing: "0.08em",
+                                textTransform: "uppercase",
+                                color: "var(--color-warm-gray)",
+                            },
+                        }}
+                    >
+                        <MuiLink component={Link} underline="hover" color="inherit" href="/">
+                            Home
+                        </MuiLink>
+                        <MuiLink component={Link} underline="hover" color="inherit" href="/collection">
+                            Collection
+                        </MuiLink>
+                        <Typography
+                            color="text.primary"
+                            sx={{
+                                fontWeight: 700,
+                                textDecoration: "underline",
+                                textUnderlineOffset: "0.18em",
+                            }}
+                        >
+                            {displayName}
+                        </Typography>
+                    </Breadcrumbs>
                     <div className="product-carousel-stage">
                         <Image
                             src={activeImage.src}

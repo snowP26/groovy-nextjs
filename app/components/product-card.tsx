@@ -7,7 +7,7 @@ type ProductCardProps = {
   price: string;
 };
 
-export default function ProductCard({ src, alt, name, price }: ProductCardProps) {
+export default function ProductCard({ src, alt, name }: ProductCardProps) {
   return (
     <div className="product-card reveal">
       <div className="product-image">
@@ -22,7 +22,6 @@ export default function ProductCard({ src, alt, name, price }: ProductCardProps)
       </div>
       <div className="product-details">
         <h3 className="product-name">{name}</h3>
-        <p className="product-price">{price}</p>
       </div>
     </div>
   );
