@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Header from "./components/header";
+import ProductCard from "./components/product-card";
 import Swal from "sweetalert2";
 
 const CONTACT_EMAIL = "groovyclothingph@gmail.com";
@@ -36,6 +37,33 @@ const FAQS = [
   {
     q: "How do I track my order?",
     a: "Tracking details will be sent via email or message once your order has been shipped.",
+  },
+];
+
+const FEATURED_PRODUCTS = [
+  {
+    src: "/assets/shop-partner-1.jpg",
+    alt: "Embroidered Longsleeves",
+    name: "Embroidered Longsleeves",
+    price: "₱1290.00",
+  },
+  {
+    src: "/assets/shop-black-1.jpg",
+    alt: "Graphic Tee Black",
+    name: "Graphic Tee — Black",
+    price: "₱850.00",
+  },
+  {
+    src: "/assets/shop-partner-2.jpg",
+    alt: "Embroidered Tee",
+    name: "Embroidered Tee",
+    price: "₱790.00",
+  },
+  {
+    src: "/assets/shop-white-1.jpg",
+    alt: "Graphic Tee White",
+    name: "Graphic Tee — White",
+    price: "₱850.00",
   },
 ];
 
@@ -268,76 +296,15 @@ export default function Home() {
           </Link>
         </div>
         <div className="featured-grid">
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-1.jpg"
-                width={600}
-                height={600}
-                alt="Embroidered Longsleeves"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Embroidered Longsleeves</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-black-1.jpg"
-                width={600}
-                height={600}
-                alt="Graphic Tee Black"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Graphic Tee — Black</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-partner-2.jpg"
-                width={600}
-                height={600}
-                alt="Embroidered Tee"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Embroidered Tee</h3>
-              <p className="product-price">
-                <span className="product-price">₱price</span>
-              </p>
-            </div>
-          </div>
-          <div className="product-card reveal">
-            <div className="product-image">
-              <Image
-                src="/assets/shop-white-1.jpg"
-                width={600}
-                height={600}
-                alt="Graphic Tee White"
-                quality={80}
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-            </div>
-            <div className="product-quick-add">Quick Add +</div>
-            <div className="product-details">
-              <h3 className="product-name">Graphic Tee — White</h3>
-              <p className="product-price">₱price</p>
-            </div>
-          </div>
+          {FEATURED_PRODUCTS.map((product) => (
+            <ProductCard
+              key={product.src}
+              src={product.src}
+              alt={product.alt}
+              name={product.name}
+              price={product.price}
+            />
+          ))}
         </div>
       </section>
 
