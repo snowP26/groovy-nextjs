@@ -2,19 +2,22 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const ITEMS = [
   {
     name: "Embroidered Longsleeves",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "embroidered-longsleeves",
     image: "/assets/shop-partner-1.jpg",
     alt: "Embroidered Longsleeves",
   },
   {
-    name: "Graphic Tee — Black",
+    name: "Graphic Tee",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "graphic-tee",
     image: "/assets/shop-black-1.jpg",
     alt: "Graphic Tee Black",
   },
@@ -22,15 +25,17 @@ const ITEMS = [
     name: "Embroidered Tee",
     category: "Metamorphosis",
     tag: "Tops",
+    slug: "embroidered-tee",
     image: "/assets/shop-partner-2.jpg",
     alt: "Embroidered Tee",
   },
   {
-    name: "Graphic Tee — White",
+    name: "Plaid Polo",
     category: "Metamorphosis",
     tag: "Tops",
-    image: "/assets/shop-white-1.jpg",
-    alt: "Graphic Tee White",
+    slug: "plaid-polo",
+    image: "/assets/plaid-polo-female-1.jpg",
+    alt: "Plaid Polo",
   },
 ];
 
@@ -131,8 +136,8 @@ export default function CollectionPage() {
       {/* Collection Grid */}
       <div className="collection-page-body">
         <div className="collection-grid">
-          {ITEMS.map((item) => (
-            <div key={item.name} className="collection-item reveal">
+          {ITEMS.map((item, index) => (
+            <Link key={`${item.slug}-${index}`} href={`/collection/${item.slug}`} className="collection-item reveal">
               <div className="collection-item-image">
                 <Image src={item.image} alt={item.alt} width={600} height={600} quality={80} sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
@@ -140,7 +145,7 @@ export default function CollectionPage() {
                 <h3 className="collection-name">{item.name}</h3>
                 <p className="collection-category">{item.category}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
