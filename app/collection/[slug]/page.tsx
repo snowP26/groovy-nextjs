@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
-const INSTAGRAM_ORDER_LINK = "https://www.instagram.com/groovyph_/";
+const INSTAGRAM_ORDER_LINK = "https://www.instagram.com/direct/t/110039370511793";
 const SIZE_CHART_IMAGE = "/assets/size-chart.jpg";
 
 const PRODUCT_BY_SLUG: Record<
