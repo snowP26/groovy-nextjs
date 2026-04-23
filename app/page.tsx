@@ -74,7 +74,6 @@ export default function Home() {
     let rafId = 0;
 
     const loader = document.querySelector<HTMLElement>(".loader");
-    const nav = document.querySelector<HTMLElement>(".nav");
     const hero = document.querySelector<HTMLElement>(".hero-content");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
 
@@ -133,19 +132,6 @@ export default function Home() {
         hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
       }
 
-      if (!nav) {
-        return;
-      }
-
-      if (window.scrollY > 100) {
-        nav.style.background = "rgba(237, 235, 231, 0.88)";
-        nav.style.backdropFilter = "blur(12px)";
-        nav.style.borderBottom = "1px solid rgba(28,26,23,0.08)";
-      } else {
-        nav.style.background = "transparent";
-        nav.style.backdropFilter = "none";
-        nav.style.borderBottom = "none";
-      }
     };
     window.addEventListener("scroll", onScroll);
 

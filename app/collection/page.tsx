@@ -39,7 +39,6 @@ export default function CollectionPage() {
   useEffect(() => {
     let rafId = 0;
 
-    const nav = document.querySelector<HTMLElement>(".nav");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
 
     const revealObserver = new IntersectionObserver(
@@ -69,20 +68,6 @@ export default function CollectionPage() {
       anchorListeners.push({ element: anchor, listener });
     });
 
-    const onScroll = () => {
-      if (!nav) return;
-      if (window.scrollY > 100) {
-        nav.style.background = "rgba(237, 235, 231, 0.88)";
-        nav.style.backdropFilter = "blur(12px)";
-        nav.style.borderBottom = "1px solid rgba(28,26,23,0.08)";
-      } else {
-        nav.style.background = "transparent";
-        nav.style.backdropFilter = "none";
-        nav.style.borderBottom = "none";
-      }
-    };
-    window.addEventListener("scroll", onScroll);
-
     const magneticListeners: Array<{
       element: HTMLElement;
       move: EventListener;
@@ -105,7 +90,6 @@ export default function CollectionPage() {
     });
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
       anchorListeners.forEach(({ element, listener }) => {
