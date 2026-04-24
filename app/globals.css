@@ -2163,6 +2163,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
 }
 
 .countdown-inner {
@@ -2170,15 +2171,22 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
+  width: min(100%, 760px);
+  margin-inline: auto;
+
 }
 
 .countdown-brand {
-  font-family: var(--font-allura);
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  -webkit-text-stroke: 1px currentColor;
-  color: var(--color-black);
-  line-height: 1;
+  position: relative;
+  width: clamp(190px, 68vw, 420px);
+  aspect-ratio: 1200 / 582;
+  margin-inline: auto;
+}
+
+.countdown-brand-image {
+  object-fit: contain;
+  object-position: center;
 }
 
 .countdown-teaser {
@@ -2192,6 +2200,7 @@ a {
 .countdown-timer {
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }

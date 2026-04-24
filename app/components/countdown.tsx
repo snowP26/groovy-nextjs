@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const DROP_DATE = new Date("2026-04-25T20:00:00+08:00");
+
+const DROP_DATE = new Date("2026-05-25T20:00:00+08:00");
 
 function getTimeLeft() {
   const diff = DROP_DATE.getTime() - Date.now();
@@ -45,7 +47,14 @@ export default function Countdown() {
   return (
     <div className="countdown-overlay">
       <div className="countdown-inner">
-        <p className="countdown-brand">Groovy.</p>
+        <div className="countdown-brand">
+          <Image
+            src="/assets/groovy-icon.png"
+            alt="Groovy"
+            className="countdown-brand-image"
+            fill
+          />
+        </div>
         <p className="countdown-teaser">Metamorphosis</p>
         <div className="countdown-timer">
           <div className="countdown-unit">
