@@ -270,7 +270,7 @@ export default function Home() {
             <h2 className="section-title">Metamorphosis</h2>
           </div>
           <Link href="/collection" className="btn">
-            View All
+            View Collection
           </Link>
         </div>
         <div className="featured-grid">
@@ -297,7 +297,6 @@ export default function Home() {
         </div>
         <div className="story-content reveal">
           <p className="story-eyebrow">Our Story</p>
-          <h2 className="story-title">Built on growth, worn with purpose</h2>
           <p className="story-text">
             Groovy began in 2019 as a creative outlet, translating ideas into
             tangible pieces. Over time, it evolved into something more personal,
