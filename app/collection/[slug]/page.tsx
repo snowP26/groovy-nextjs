@@ -8,7 +8,7 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
-const INSTAGRAM_ORDER_LINK = "https://www.instagram.com/direct/t/110039370511793";
+const INSTAGRAM_ORDER_LINK = "https://ig.me/m/groovyph_";
 
 const PRODUCT_BY_SLUG: Record<
     string,
