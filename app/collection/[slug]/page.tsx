@@ -122,7 +122,7 @@ const PLAID_VARIANTS = [
 
 export default function Product() {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("polo");
+    const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("longsleeves");
     const [orderModalOpen, setOrderModalOpen] = useState(false);
     const [formCopied, setFormCopied] = useState(false);
     const [orderForm, setOrderForm] = useState({
