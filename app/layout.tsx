@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.groovyph.com"),
   title: {
-    default: "Groovy Clothing | Minimalist Streetwear & Clean Apparel Naga City",
+    default: "groovy.",
     template: "%s | Groovy Clothing",
   },
   description:
