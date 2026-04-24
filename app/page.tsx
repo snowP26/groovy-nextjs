@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ProductCard from "./components/product-card";
-import Swal from "sweetalert2";
 
 const CONTACT_EMAIL = "shop@groovyph.com";
 
@@ -188,45 +187,6 @@ export default function Home() {
     };
   }, []);
 
-  const copyEmailToClipboard = async (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      await Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: "Email copied to clipboard",
-        showConfirmButton: false,
-        timer: 1800,
-        timerProgressBar: true,
-      });
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = CONTACT_EMAIL;
-      textarea.setAttribute("readonly", "");
-      textarea.style.position = "absolute";
-      textarea.style.left = "-9999px";
-      document.body.appendChild(textarea);
-      textarea.select();
-
-      const didCopy = document.execCommand("copy");
-      document.body.removeChild(textarea);
-
-      await Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: didCopy ? "success" : "error",
-        title: didCopy ? "Email copied to clipboard" : "Could not copy email",
-        showConfirmButton: false,
-        timer: 1800,
-        timerProgressBar: true,
-      });
-    }
-  };
-
-
   return (
     <div>
       <section className="hero" id="hero">
@@ -348,7 +308,7 @@ export default function Home() {
             <div className="contact-item">
               <p className="contact-label">Email</p>
               <p className="contact-value">
-                <a href={`mailto:${CONTACT_EMAIL}`} onClick={copyEmailToClipboard}>
+                <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}`} target="_blank" rel="noopener noreferrer">
                   {CONTACT_EMAIL}
                 </a>
               </p>
