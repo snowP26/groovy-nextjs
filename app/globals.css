@@ -1397,21 +1397,6 @@ a {
   }
 }
 
-@keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes modalPopIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
 
 /* ── Product Detail Scaffold ─────────────────────────────── */
 
@@ -1934,8 +1919,6 @@ a {
   border-color: var(--color-black);
 }
 
-/* ── How to Order ────────────────────────────────────────── */
-
 .how-to-order-section {
   background-color: var(--color-cream);
   padding: 6rem 3rem;
@@ -1958,13 +1941,6 @@ a {
   margin-bottom: 1rem;
 }
 
-.how-to-order-heading {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  margin-bottom: 2rem;
-}
 
 .how-to-order-steps {
   padding-left: 1.2rem;
@@ -1982,80 +1958,115 @@ a {
 .how-to-order-form-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  padding: 2rem;
+  border-top: 2px solid var(--color-accent);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .how-to-order-form-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .how-to-order-form-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 400;
   letter-spacing: -0.01em;
+  color: var(--color-black);
+  margin-bottom: 0.15rem;
+}
+
+.how-to-order-form-hint {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-warm-gray);
 }
 
 .how-to-order-copy-btn {
-  background: none;
-  border: 1px solid var(--color-border);
-  color: var(--color-black);
+  flex-shrink: 0;
+  background: var(--color-black);
+  border: 1px solid var(--color-black);
+  color: var(--color-white);
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  padding: 0.35rem 0.85rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 
 .how-to-order-copy-btn:hover {
-  background: var(--color-black);
-  color: var(--color-white);
+  background: #2e2b27;
+  border-color: #2e2b27;
 }
 
-.how-to-order-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.how-to-order-field-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.how-to-order-label {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-warm-gray);
-}
-
-.how-to-order-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.45rem 0;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
+.how-to-order-copy-btn.is-copied {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
   color: var(--color-black);
-  outline: none;
-  transition: border-color 0.2s;
 }
 
-.how-to-order-input::placeholder {
+.how-to-order-form-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.how-to-order-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.how-to-order-form-group-label {
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-accent);
+}
+
+.how-to-order-form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.how-to-order-form-row {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.how-to-order-form-row:last-child {
+  border-bottom: none;
+}
+
+.how-to-order-form-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--color-warm-gray);
-  opacity: 0.5;
+  white-space: nowrap;
+  padding: 0.55rem 0 0.55rem 0;
+  width: 1%;
 }
 
-.how-to-order-input:focus {
-  border-color: var(--color-black);
+.how-to-order-form-colon {
+  font-size: 0.78rem;
+  color: var(--color-warm-gray);
+  padding: 0.55rem 0.75rem;
+  width: 1%;
+}
+
+.how-to-order-form-value {
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -2068,7 +2079,6 @@ a {
     padding: 4rem 1.5rem;
   }
 }
-
 .product-not-found {
   min-height: calc(100vh - var(--header-height));
   padding: 6rem 3rem;

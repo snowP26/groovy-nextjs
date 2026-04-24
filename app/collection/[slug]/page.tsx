@@ -120,15 +120,22 @@ const PLAID_VARIANTS = [
     },
 ];
 
+const ORDER_TEMPLATE = `— Delivery Info —
+Name:
+Delivery Address:
+Contact Number:
+Landmark:
+
+— Order Details —
+Order:
+Quantity:
+Color:
+Size:`;
+
 export default function Product() {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("longsleeves");
-    const [orderModalOpen, setOrderModalOpen] = useState(false);
-    const [formCopied, setFormCopied] = useState(false);
-    const [orderForm, setOrderForm] = useState({
-        name: "", address: "", contact: "", landmark: "",
-        order: "", quantity: "", color: "", size: "",
-    });
+    const [templateCopied, setTemplateCopied] = useState(false);
     const params = useParams<{ slug: string }>();
     const slug = typeof params.slug === "string" ? params.slug : "";
     const normalizedSlug = SLUG_ALIAS[slug] ?? slug;
@@ -138,22 +145,10 @@ export default function Product() {
         setActiveImageIndex(0);
     }, [normalizedSlug, selectedPlaidVariant]);
 
-    useEffect(() => {
-        document.body.style.overflow = orderModalOpen ? "hidden" : "";
-        return () => { document.body.style.overflow = ""; };
-    }, [orderModalOpen]);
-
-    const buildMessage = () =>
-        `Order Form\n\nName: ${orderForm.name}\nDelivery Address: ${orderForm.address}\nContact Number: ${orderForm.contact}\nLandmark: ${orderForm.landmark}\n\nOrder: ${orderForm.order}\nQuantity: ${orderForm.quantity}\nColor: ${orderForm.color}\nSize: ${orderForm.size}`;
-
-    const copyOrderForm = async () => {
-        await navigator.clipboard.writeText(buildMessage());
-        setFormCopied(true);
-        setTimeout(() => setFormCopied(false), 2000);
-    };
-
-    const handleFormChange = (field: keyof typeof orderForm) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        setOrderForm((prev) => ({ ...prev, [field]: e.target.value }));
+    const copyTemplate = async () => {
+        await navigator.clipboard.writeText(ORDER_TEMPLATE);
+        setTemplateCopied(true);
+        setTimeout(() => setTemplateCopied(false), 2000);
     };
 
     if (!product) {
@@ -358,72 +353,67 @@ export default function Product() {
                     ) : null}
 
                     <div className="product-scaffold-actions">
-                        <button
+                        <a
+                            href="https://ig.me/m/groovyph_"
                             className="btn product-scaffold-cta"
-                            onClick={() => setOrderModalOpen(true)}
                         >
                             Order Now
-                            <span className="product-scaffold-cta-sub">via Instagram</span>
-                        </button>
+                            <span className="product-scaffold-cta-sub">via Instagram DM</span>
+                        </a>
                     </div>
                 </div>
             </section>
 
-            {orderModalOpen && (
-                <div className="order-modal-overlay" onClick={() => setOrderModalOpen(false)}>
-                    <div className="order-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="order-modal-header">
-                            <p className="order-modal-title">Order Now</p>
-                            <button className="order-modal-close" onClick={() => setOrderModalOpen(false)} aria-label="Close">&#x2715;</button>
-                        </div>
-                        <ol className="order-modal-steps">
-                            <li>Fill in the form below.</li>
-                            <li>On mobile, tap <strong>Send via Instagram</strong> — your details will be pre-filled in the DM.</li>
-                            <li>On desktop, tap <strong>Copy Form</strong> and paste it in our Instagram DMs.</li>
-                            <li>Wait for our confirmation on availability, payment, and shipping.</li>
+            <section className="how-to-order-section">
+                <div className="how-to-order-grid">
+                    <div>
+                        <p className="how-to-order-eyebrow">How to Order</p>
+                        <ol className="how-to-order-steps">
+                            <li>Browse the collection and select your desired item.</li>
+                            <li>Click <strong>Order Now</strong> on the product page.</li>
+                            <li>You will be redirected to our Instagram account.</li>
+                            <li>Send us a direct message with the completed order form.</li>
+                            <li>Wait for our confirmation message for availability, payment details, and shipping schedule.</li>
                         </ol>
-                        <div className="how-to-order-fields">
-                            {([
-                                { label: "Name", field: "name", placeholder: "Juan Dela Cruz" },
-                                { label: "Delivery Address", field: "address", placeholder: "123 Street, City" },
-                                { label: "Contact Number", field: "contact", placeholder: "09XX XXX XXXX" },
-                                { label: "Landmark", field: "landmark", placeholder: "Near SM City" },
-                                { label: "Order", field: "order", placeholder: "Embroidered Longsleeves" },
-                                { label: "Quantity", field: "quantity", placeholder: "1" },
-                                { label: "Color", field: "color", placeholder: "Black" },
-                                { label: "Size", field: "size", placeholder: "M" },
-                            ] as { label: string; field: keyof typeof orderForm; placeholder: string }[]).map(({ label, field, placeholder }) => (
-                                <div key={field} className="how-to-order-field-row">
-                                    <label className="how-to-order-label">{label}</label>
-                                    <input
-                                        className="how-to-order-input"
-                                        type="text"
-                                        placeholder={placeholder}
-                                        value={orderForm[field]}
-                                        onChange={handleFormChange(field)}
-                                    />
+                    </div>
+                    <div className="how-to-order-form-card">
+                        <div className="how-to-order-form-header">
+                            <div>
+                                <p className="how-to-order-form-title">Order Form</p>
+                                <p className="how-to-order-form-hint">Copy and send via Instagram DM</p>
+                            </div>
+                            <button
+                                className={`how-to-order-copy-btn${templateCopied ? " is-copied" : ""}`}
+                                onClick={copyTemplate}
+                            >
+                                {templateCopied ? "✓ Copied" : "Copy"}
+                            </button>
+                        </div>
+
+                        <div className="how-to-order-form-body">
+                            {[
+                                { heading: "Delivery Info", fields: ["Name", "Delivery Address", "Contact Number", "Landmark"] },
+                                { heading: "Order Details", fields: ["Order", "Quantity", "Color", "Size"] },
+                            ].map(({ heading, fields }) => (
+                                <div key={heading} className="how-to-order-form-group">
+                                    <p className="how-to-order-form-group-label">{heading}</p>
+                                    <table className="how-to-order-form-table">
+                                        <tbody>
+                                            {fields.map((label) => (
+                                                <tr key={label} className="how-to-order-form-row">
+                                                    <td className="how-to-order-form-label">{label}</td>
+                                                    <td className="how-to-order-form-colon">:</td>
+                                                    <td className="how-to-order-form-value" />
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             ))}
                         </div>
-                        <div className="order-modal-actions">
-                            <a
-                                href={`https://ig.me/m/groovyph_?text=${encodeURIComponent(buildMessage())}`}
-                                className="order-modal-send"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() => setOrderModalOpen(false)}
-                            >
-                                Send via Instagram
-                            </a>
-                            <button className="order-modal-copy" onClick={copyOrderForm}>
-                                {formCopied ? "Copied!" : "Copy Form"}
-                            </button>
-                        </div>
                     </div>
                 </div>
-            )}
-
-
+            </section>
         </>
     );
 }
