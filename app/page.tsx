@@ -72,20 +72,8 @@ export default function Home() {
     let cartCount = 0;
     let rafId = 0;
 
-    const loader = document.querySelector<HTMLElement>(".loader");
     const hero = document.querySelector<HTMLElement>(".hero-content");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
-
-    const onLoad = () => {
-      window.setTimeout(() => {
-        loader?.classList.add("hidden");
-      }, 1500);
-    };
-
-    window.addEventListener("load", onLoad);
-    if (document.readyState === "complete") {
-      onLoad();
-    }
 
 
 
@@ -124,13 +112,14 @@ export default function Home() {
       });
 
     const onScroll = () => {
-      const scrolled = window.pageYOffset;
-
-      if (hero && scrolled < window.innerHeight) {
-        hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-        hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
-      }
-
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const scrolled = window.pageYOffset;
+        if (hero && scrolled < window.innerHeight) {
+          hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+          hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
+        }
+      });
     };
     window.addEventListener("scroll", onScroll);
 
@@ -159,13 +148,16 @@ export default function Home() {
       leave: EventListener;
     }> = [];
     document.querySelectorAll<HTMLElement>(".btn, .submit-btn").forEach((button) => {
+      let magneticRaf = 0;
       const move = (event: Event) => {
         const mouseEvent = event as MouseEvent;
-        const rect = button.getBoundingClientRect();
-        const x = mouseEvent.clientX - rect.left - rect.width / 2;
-        const y = mouseEvent.clientY - rect.top - rect.height / 2;
-
-        button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        cancelAnimationFrame(magneticRaf);
+        magneticRaf = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          const x = mouseEvent.clientX - rect.left - rect.width / 2;
+          const y = mouseEvent.clientY - rect.top - rect.height / 2;
+          button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
       };
       const leave = () => {
         button.style.transform = "";
@@ -177,7 +169,6 @@ export default function Home() {
     });
 
     return () => {
-      window.removeEventListener("load", onLoad);
       window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
@@ -243,7 +234,7 @@ export default function Home() {
         <div className="hero-content">
           <p className="hero-tagline"></p>
           <h1 className="hero-title">
-            <span>g</span>
+            <span>G</span>
             <span>r</span>
             <span>o</span>
             <span>o</span>
@@ -293,6 +284,7 @@ export default function Home() {
             fill
             src="/assets/groovy-logo.svg"
             alt="Groovy Logo"
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
         <div className="story-content reveal">

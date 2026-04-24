@@ -23,13 +23,17 @@ export default function InitialLoader() {
         }
 
         setIsVisible(true);
+        document.body.style.overflow = "hidden";
+
         const timerId = window.setTimeout(() => {
             setIsVisible(false);
+            document.body.style.overflow = "";
             window.sessionStorage.setItem(HOME_LOADER_SEEN_KEY, "1");
         }, LOADER_DURATION_MS);
 
         return () => {
             window.clearTimeout(timerId);
+            document.body.style.overflow = "";
         };
     }, [pathname]);
 
@@ -40,7 +44,7 @@ export default function InitialLoader() {
     return (
         <div className="loader" role="status" aria-live="polite" aria-label="Loading">
             <div className="loader-text">
-                <span style={{ animationDelay: "0s" }}>g</span>
+                <span style={{ animationDelay: "0s" }}>G</span>
                 <span style={{ animationDelay: "0.1s" }}>r</span>
                 <span style={{ animationDelay: "0.2s" }}>o</span>
                 <span style={{ animationDelay: "0.3s" }}>o</span>

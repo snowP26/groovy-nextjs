@@ -4,7 +4,7 @@ export default function HeaderCollection() {
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                groovy.
+                Groovy.
             </Link>
             <ul className="nav-links">
                 <li><Link href="/">Home</Link></li>
