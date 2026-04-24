@@ -192,21 +192,17 @@ export default function Home() {
     return (
         <div>
             <section className="hero" id="hero">
-                <img src="/assets/groovy-bg.svg" alt="" className="hero-bg" />
                 <div className="hero-content">
-                    <p className="hero-tagline"></p>
                     <h1 className="hero-title">
-                        <span>G</span>
-                        <span>r</span>
-                        <span>o</span>
-                        <span>o</span>
-                        <span>v</span>
-                        <span>y</span>
-                        <span>.</span>
+                        <Image
+                            src="/assets/text-icon.svg"
+                            alt="Groovy"
+                            className="hero-title-image"
+                            width={1200}
+                            height={582}
+                            priority
+                        />
                     </h1>
-                    <p className="hero-subtitle">
-
-                    </p>
                     <div className="hero-cta">
                         <Link href="/collection" className="btn">
                             Explore Collection

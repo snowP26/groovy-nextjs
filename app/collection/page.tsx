@@ -13,7 +13,7 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "embroidered-longsleeves",
-    image: "/assets/shop-partner-1.jpg",
+    image: "/assets/longsleeve/2.jpg",
     alt: "Embroidered Longsleeves",
   },
   {
@@ -29,16 +29,16 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "embroidered-tee",
-    image: "/assets/shop-partner-2.jpg",
+    image: "/assets/embroid/1.jpg",
     alt: "Embroidered Tee",
   },
   {
-    name: "Plaid Polo",
+    name: "Plaid Longsleeves Polo",
     category: "Metamorphosis",
     tag: "Tops",
     slug: "plaid-polo",
-    image: "/assets/plaid/2.jpg",
-    alt: "Plaid Polo",
+    image: "/assets/plaid/1.jpg",
+    alt: "Plaid Longsleeves Polo",
   },
 ];
 

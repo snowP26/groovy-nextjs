@@ -29,7 +29,6 @@ const PRODUCT_BY_SLUG: Record<
         name: "Embroidered Longsleeves",
         price: 1290,
         images: [
-            { src: "/assets/longsleeve/1.jpg", alt: "Embroidered Longsleeves black & white" },
             { src: "/assets/longsleeve/2.jpg", alt: "Embroidered Longsleeves black" },
             { src: "/assets/longsleeve/3.jpg", alt: "Embroidered Longsleeves white" },
         ],
@@ -48,7 +47,6 @@ const PRODUCT_BY_SLUG: Record<
         name: "Embroidered Tee",
         price: 790,
         images: [
-            { src: "/assets/embroid/4.jpg", alt: "Embroidered Tee Together" },
             { src: "/assets/embroid/1.jpg", alt: "Embroidered Tee black" },
             { src: "/assets/embroid/2.jpg", alt: "Embroidered Tee black 2" },
             { src: "/assets/embroid/3.jpg", alt: "Embroidered Tee white" },
@@ -68,10 +66,8 @@ const PRODUCT_BY_SLUG: Record<
         price: 850,
         images: [
             { src: "/assets/graphic/1.jpg", alt: "Graphic Tee black" },
-            { src: "/assets/graphic/5.jpg", alt: "Graphic Tee white product" },
             { src: "/assets/graphic/2.jpg", alt: "Graphic Tee white" },
             { src: "/assets/graphic/3.jpg", alt: "Graphic Tee black product" },
-            { src: "/assets/graphic/4.jpg", alt: "Graphic Tee white product" },
         ],
         sizes: ["S", "M", "L", "XL"],
         features: ["Oversized fit", "Premium cotton", "Structured Fit", "Everyday essential"],
@@ -110,24 +106,24 @@ const SLUG_ALIAS: Record<string, string> = {
 
 const PLAID_VARIANTS = [
     {
-        key: "polo",
-        label: "Polo",
-        name: "Plaid Polo",
-        price: 1650,
-        imageIndices: [2, 3],
-    },
-    {
         key: "longsleeves",
         label: "Longsleeves",
         name: "Plaid Longsleeves",
         price: 1950,
         imageIndices: [0, 1],
     },
+    {
+        key: "polo",
+        label: "Polo",
+        name: "Plaid Polo",
+        price: 1650,
+        imageIndices: [2, 3],
+    },
 ];
 
 export default function Product() {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("polo");
+    const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("longsleeves");
     const params = useParams<{ slug: string }>();
     const slug = typeof params.slug === "string" ? params.slug : "";
     const normalizedSlug = SLUG_ALIAS[slug] ?? slug;
@@ -208,36 +204,6 @@ export default function Product() {
             </Breadcrumbs>
             <section className="product-scaffold">
                 <div className="product-scaffold-image product-carousel">
-                    <Breadcrumbs
-                        aria-label="breadcrumb"
-                        separator="/"
-                        sx={{
-                            mb: 0.6,
-                            "& .MuiLink-root, & .MuiTypography-root": {
-                                fontSize: "0.75rem",
-                                letterSpacing: "0.08em",
-                                textTransform: "uppercase",
-                                color: "var(--color-warm-gray)",
-                            },
-                        }}
-                    >
-                        <MuiLink component={Link} underline="hover" color="inherit" href="/">
-                            Home
-                        </MuiLink>
-                        <MuiLink component={Link} underline="hover" color="inherit" href="/collection">
-                            Collection
-                        </MuiLink>
-                        <Typography
-                            color="text.primary"
-                            sx={{
-                                fontWeight: 700,
-                                textDecoration: "underline",
-                                textUnderlineOffset: "0.18em",
-                            }}
-                        >
-                            {displayName}
-                        </Typography>
-                    </Breadcrumbs>
                     <div className="product-carousel-stage">
                         <Image
                             src={activeImage.src}
@@ -303,7 +269,7 @@ export default function Product() {
                                     key={v.key}
                                     type="button"
                                     className={`product-variant-btn${selectedPlaidVariant === v.key ? " is-active" : ""}`}
-                                    onClick={() => setSelectedPlaidVariant(v.key as "longsleeves" | "polo")}
+                                    onClick={() => setSelectedPlaidVariant(v.key as "polo" | "longsleeves")}
                                 >
                                     {v.label}
                                 </button>
