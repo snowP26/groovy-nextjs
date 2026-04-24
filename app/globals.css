@@ -124,10 +124,14 @@ a {
 }
 
 .nav-logo {
-  font-family: var(--font-allura);
-  font-size: 1.5rem;
-  font-weight: 400;
-  letter-spacing: 0;
+  position: relative;
+  display: block;
+  width: min(32vw, 190px);
+  height: 56px;
+}
+
+.nav-logo-image {
+  object-fit: contain;
 }
 
 .nav-links {
@@ -240,10 +244,15 @@ a {
   font-size: clamp(4rem, 15vw, 12rem);
   -webkit-text-stroke: 1.5px currentColor;
   line-height: 0.9;
-  margin-bottom: 2rem;
   opacity: 0;
   transform: translateY(50px);
   animation: fadeUp 1.2s var(--transition-smooth) 0.7s forwards;
+}
+
+.hero-title-image {
+  width: min(92vw, 820px);
+  height: auto;
+  margin-inline: auto;
 }
 
 .hero-title span {
@@ -875,28 +884,26 @@ a {
   height: 50px;
   border: 1px solid var(--color-border);
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  color: var(--color-black);
   transition:
     border-color 0.3s var(--transition-smooth),
-    background-color 0.3s var(--transition-smooth);
+    background-color 0.3s var(--transition-smooth),
+    color 0.3s var(--transition-smooth);
 }
 
 .social-link:hover {
   border-color: var(--color-accent);
   background-color: var(--color-accent);
+  color: var(--color-white);
 }
 
 .social-link svg {
+  display: block;
   width: 20px;
   height: 20px;
-  fill: var(--color-black);
-  transition: fill 0.3s var(--transition-smooth);
-}
-
-.social-link:hover svg {
-  fill: var(--color-white);
 }
 
 .contact-form {
@@ -1128,11 +1135,16 @@ a {
   }
 
   .nav {
-    padding: 1rem 1.5rem;
+    padding: 0.9rem 1.1rem;
   }
 
   .nav-links {
     display: none;
+  }
+
+  .nav-logo {
+    width: clamp(110px, 38vw, 150px);
+    height: clamp(34px, 10vw, 44px);
   }
 
   .hero {
@@ -1172,6 +1184,21 @@ a {
     justify-content: center;
   }
 
+
+@media (max-width: 480px) {
+  :root {
+    --header-height: 64px;
+  }
+
+  .nav {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .nav-logo {
+    width: clamp(96px, 44vw, 124px);
+    height: 34px;
+  }
+}
   .footer-copy {
     text-align: center;
   }

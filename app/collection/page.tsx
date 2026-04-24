@@ -13,7 +13,7 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "embroidered-longsleeves",
-    image: "/assets/shop-partner-1.jpg",
+    image: "/assets/longsleeve/2.jpg",
     alt: "Embroidered Longsleeves",
   },
   {
@@ -29,16 +29,16 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "embroidered-tee",
-    image: "/assets/shop-partner-2.jpg",
+    image: "/assets/embroid/1.jpg",
     alt: "Embroidered Tee",
   },
   {
-    name: "Plaid Polo",
+    name: "Plaid Longsleeves Polo",
     category: "Metamorphosis",
     tag: "Tops",
     slug: "plaid-polo",
-    image: "/assets/plaid/2.jpg",
-    alt: "Plaid Polo",
+    image: "/assets/plaid/1.jpg",
+    alt: "Plaid Longsleeves Polo",
   },
 ];
 
@@ -162,9 +162,6 @@ export default function CollectionPage() {
             This collection marks a return, shedding what no longer aligns and
             reconnecting with what truly does. A process of preserving the core
             while evolving with purpose.
-          </p>
-          <p>
-            Guided by a stronger vision and a renewed sense of identity.
           </p>
         </div>
       </div>
