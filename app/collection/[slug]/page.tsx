@@ -150,8 +150,6 @@ export default function Product() {
     const buildMessage = () =>
         `Order Form\n\nName: ${orderForm.name}\nDelivery Address: ${orderForm.address}\nContact Number: ${orderForm.contact}\nLandmark: ${orderForm.landmark}\n\nOrder: ${orderForm.order}\nQuantity: ${orderForm.quantity}\nColor: ${orderForm.color}\nSize: ${orderForm.size}`;
 
-    const instagramLink = `https://ig.me/m/groovyph_?text=${encodeURIComponent(buildMessage())}`;
-
     const copyOrderForm = async () => {
         await navigator.clipboard.writeText(buildMessage());
         setFormCopied(true);
@@ -412,15 +410,15 @@ export default function Product() {
                             ))}
                         </div>
                         <div className="order-modal-actions">
-                            <Link
-                                href={instagramLink}
+                            <a
+                                href={`https://ig.me/m/groovyph_?text=${encodeURIComponent(buildMessage())}`}
                                 className="order-modal-send"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => setOrderModalOpen(false)}
                             >
                                 Send via Instagram
-                            </Link>
+                            </a>
                             <button className="order-modal-copy" onClick={copyOrderForm}>
                                 {formCopied ? "Copied!" : "Copy Form"}
                             </button>
