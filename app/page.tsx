@@ -44,29 +44,25 @@ const FEATURED_PRODUCTS = [
     src: "/assets/shop-partner-1.jpg",
     alt: "Embroidered Longsleeves",
     name: "Embroidered Longsleeves",
-    price: "₱1290.00",
-    redirect: "/collection/embroidered-longsleeves",
+    slug: "embroidered-longsleeves",
   },
   {
     src: "/assets/shop-black-1.jpg",
     alt: "Graphic Tee Black",
     name: "Graphic Tee — Black",
-    price: "₱850.00",
-    redirect: "/collection/graphic-tee",
+    slug: "graphic-tee",
   },
   {
     src: "/assets/shop-partner-2.jpg",
     alt: "Embroidered Tee",
     name: "Embroidered Tee",
-    price: "₱790.00",
-    redirect: "/collection/embroidered-tee",
+    slug: "embroidered-tee",
   },
   {
     src: "/assets/shop-white-1.jpg",
     alt: "Graphic Tee White",
     name: "Graphic Tee — White",
-    price: "₱850.00",
-    redirect: "/collection/graphic-tee",
+    slug: "graphic-tee",
   },
 ];
 
@@ -284,8 +280,7 @@ export default function Home() {
               src={product.src}
               alt={product.alt}
               name={product.name}
-              price={product.price}
-              redirect={product.redirect}
+              slug={product.slug}
             />
           ))}
         </div>
