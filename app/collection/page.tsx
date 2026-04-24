@@ -163,9 +163,6 @@ export default function CollectionPage() {
             reconnecting with what truly does. A process of preserving the core
             while evolving with purpose.
           </p>
-          <p>
-            Guided by a stronger vision and a renewed sense of identity.
-          </p>
         </div>
       </div>
 
