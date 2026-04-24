@@ -1,15 +1,15 @@
+import Link from "next/link";
 import Image from "next/image";
-
 type ProductCardProps = {
   src: string;
   alt: string;
   name: string;
-  price: string;
+  slug: string;
 };
 
-export default function ProductCard({ src, alt, name }: ProductCardProps) {
+export default function ProductCard({ src, alt, name, slug }: ProductCardProps) {
   return (
-    <div className="product-card reveal">
+    <Link href={`/collection/${slug}`} className="product-card reveal">
       <div className="product-image">
         <Image
           src={src}
@@ -21,8 +21,11 @@ export default function ProductCard({ src, alt, name }: ProductCardProps) {
         />
       </div>
       <div className="product-details">
-        <h3 className="product-name">{name}</h3>
+        <div className="product-details-text">
+          <h3 className="product-name">{name}</h3>
+        </div>
+        <span className="product-details-arrow" aria-hidden="true">→</span>
       </div>
-    </div>
+    </Link>
   );
 }

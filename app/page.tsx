@@ -4,9 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ProductCard from "./components/product-card";
-import Swal from "sweetalert2";
 
-const CONTACT_EMAIL = "groovyclothingph@gmail.com";
+const CONTACT_EMAIL = "shop@groovyph.com";
 
 const FAQS = [
   {
@@ -44,25 +43,25 @@ const FEATURED_PRODUCTS = [
     src: "/assets/shop-partner-1.jpg",
     alt: "Embroidered Longsleeves",
     name: "Embroidered Longsleeves",
-    price: "₱1290.00",
+    slug: "embroidered-longsleeves",
   },
   {
     src: "/assets/shop-black-1.jpg",
     alt: "Graphic Tee Black",
     name: "Graphic Tee — Black",
-    price: "₱850.00",
+    slug: "graphic-tee",
   },
   {
     src: "/assets/shop-partner-2.jpg",
     alt: "Embroidered Tee",
     name: "Embroidered Tee",
-    price: "₱790.00",
+    slug: "embroidered-tee",
   },
   {
     src: "/assets/shop-white-1.jpg",
     alt: "Graphic Tee White",
     name: "Graphic Tee — White",
-    price: "₱850.00",
+    slug: "graphic-tee",
   },
 ];
 
@@ -72,20 +71,8 @@ export default function Home() {
     let cartCount = 0;
     let rafId = 0;
 
-    const loader = document.querySelector<HTMLElement>(".loader");
     const hero = document.querySelector<HTMLElement>(".hero-content");
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
-
-    const onLoad = () => {
-      window.setTimeout(() => {
-        loader?.classList.add("hidden");
-      }, 1500);
-    };
-
-    window.addEventListener("load", onLoad);
-    if (document.readyState === "complete") {
-      onLoad();
-    }
 
 
 
@@ -124,13 +111,14 @@ export default function Home() {
       });
 
     const onScroll = () => {
-      const scrolled = window.pageYOffset;
-
-      if (hero && scrolled < window.innerHeight) {
-        hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-        hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
-      }
-
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const scrolled = window.pageYOffset;
+        if (hero && scrolled < window.innerHeight) {
+          hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+          hero.style.opacity = String(1 - (scrolled / window.innerHeight) * 0.9);
+        }
+      });
     };
     window.addEventListener("scroll", onScroll);
 
@@ -159,13 +147,16 @@ export default function Home() {
       leave: EventListener;
     }> = [];
     document.querySelectorAll<HTMLElement>(".btn, .submit-btn").forEach((button) => {
+      let magneticRaf = 0;
       const move = (event: Event) => {
         const mouseEvent = event as MouseEvent;
-        const rect = button.getBoundingClientRect();
-        const x = mouseEvent.clientX - rect.left - rect.width / 2;
-        const y = mouseEvent.clientY - rect.top - rect.height / 2;
-
-        button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        cancelAnimationFrame(magneticRaf);
+        magneticRaf = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          const x = mouseEvent.clientX - rect.left - rect.width / 2;
+          const y = mouseEvent.clientY - rect.top - rect.height / 2;
+          button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
       };
       const leave = () => {
         button.style.transform = "";
@@ -177,7 +168,6 @@ export default function Home() {
     });
 
     return () => {
-      window.removeEventListener("load", onLoad);
       window.removeEventListener("scroll", onScroll);
       window.cancelAnimationFrame(rafId);
       revealObserver.disconnect();
@@ -197,60 +187,14 @@ export default function Home() {
     };
   }, []);
 
-  const copyEmailToClipboard = async (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    try {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      await Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: "Email copied to clipboard",
-        showConfirmButton: false,
-        timer: 1800,
-        timerProgressBar: true,
-      });
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = CONTACT_EMAIL;
-      textarea.setAttribute("readonly", "");
-      textarea.style.position = "absolute";
-      textarea.style.left = "-9999px";
-      document.body.appendChild(textarea);
-      textarea.select();
-
-      const didCopy = document.execCommand("copy");
-      document.body.removeChild(textarea);
-
-      await Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: didCopy ? "success" : "error",
-        title: didCopy ? "Email copied to clipboard" : "Could not copy email",
-        showConfirmButton: false,
-        timer: 1800,
-        timerProgressBar: true,
-      });
-    }
-  };
-
-
   return (
     <div>
-
-
-
-
-
-      {/* Hero Section */}
       <section className="hero" id="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/groovy-bg.svg" alt="" className="hero-bg" />
         <div className="hero-content">
           <p className="hero-tagline"></p>
           <h1 className="hero-title">
-            <span>g</span>
+            <span>G</span>
             <span>r</span>
             <span>o</span>
             <span>o</span>
@@ -277,7 +221,7 @@ export default function Home() {
             <h2 className="section-title">Metamorphosis</h2>
           </div>
           <Link href="/collection" className="btn">
-            View All
+            View Collection
           </Link>
         </div>
         <div className="featured-grid">
@@ -287,7 +231,7 @@ export default function Home() {
               src={product.src}
               alt={product.alt}
               name={product.name}
-              price={product.price}
+              slug={product.slug}
             />
           ))}
         </div>
@@ -300,11 +244,11 @@ export default function Home() {
             fill
             src="/assets/groovy-logo.svg"
             alt="Groovy Logo"
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
         </div>
         <div className="story-content reveal">
           <p className="story-eyebrow">Our Story</p>
-          <h2 className="story-title">Built on growth, worn with purpose</h2>
           <p className="story-text">
             Groovy began in 2019 as a creative outlet, translating ideas into
             tangible pieces. Over time, it evolved into something more personal,
@@ -364,7 +308,7 @@ export default function Home() {
             <div className="contact-item">
               <p className="contact-label">Email</p>
               <p className="contact-value">
-                <a href={`mailto:${CONTACT_EMAIL}`} onClick={copyEmailToClipboard}>
+                <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}`} target="_blank" rel="noopener noreferrer">
                   {CONTACT_EMAIL}
                 </a>
               </p>

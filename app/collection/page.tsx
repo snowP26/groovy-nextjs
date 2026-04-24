@@ -82,12 +82,16 @@ export default function CollectionPage() {
       leave: EventListener;
     }> = [];
     document.querySelectorAll<HTMLElement>(".btn").forEach((button) => {
+      let magneticRaf = 0;
       const move = (event: Event) => {
         const mouseEvent = event as MouseEvent;
-        const rect = button.getBoundingClientRect();
-        const x = mouseEvent.clientX - rect.left - rect.width / 2;
-        const y = mouseEvent.clientY - rect.top - rect.height / 2;
-        button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        cancelAnimationFrame(magneticRaf);
+        magneticRaf = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          const x = mouseEvent.clientX - rect.left - rect.width / 2;
+          const y = mouseEvent.clientY - rect.top - rect.height / 2;
+          button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
       };
       const leave = () => {
         button.style.transform = "";
@@ -112,37 +116,40 @@ export default function CollectionPage() {
 
   return (
     <div>
+      <Breadcrumbs
+        aria-label="breadcrumb"
+        separator="/"
+        sx={{
+          px: { xs: "1.25rem", md: "1.75rem" },
+          pt: { xs: "1rem", md: "2rem" },
+          pb: 0,
+          backgroundColor: "var(--color-cream)",
+          "& .MuiLink-root, & .MuiTypography-root": {
+            fontSize: "0.75rem",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--color-warm-gray)",
+          },
+        }}
+      >
+        <MuiLink component={Link} underline="hover" color="inherit" href="/">
+          Home
+        </MuiLink>
+        <Typography
+          color="text.primary"
+          sx={{
+            fontWeight: 700,
+            textDecoration: "underline",
+            textUnderlineOffset: "0.18em",
+          }}
+        >
+          Collection
+        </Typography>
+      </Breadcrumbs>
+
       {/* Page Hero */}
       <div className="collection-page-hero reveal">
         <div className="collection-page-hero-left">
-          <Breadcrumbs
-            aria-label="breadcrumb"
-            separator="/"
-            sx={{
-              mb: 1,
-              "& .MuiLink-root, & .MuiTypography-root": {
-                fontSize: "0.75rem",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--color-warm-gray)",
-              },
-            }}
-          >
-            <MuiLink component={Link} underline="hover" color="inherit" href="/">
-              Home
-            </MuiLink>
-            <Typography
-              color="text.primary"
-              sx={{
-                fontWeight: 700,
-                textDecoration: "underline",
-                textUnderlineOffset: "0.18em",
-              }}
-            >
-              Collection
-            </Typography>
-          </Breadcrumbs>
-
           <p className="section-subtitle">Latest Drop</p>
           <h1 className="collection-page-title">Metamorphosis</h1>
         </div>
@@ -171,8 +178,11 @@ export default function CollectionPage() {
                 <Image src={item.image} alt={item.alt} width={600} height={600} quality={80} sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
               <div className="collection-info">
-                <h3 className="collection-name">{item.name}</h3>
-                <p className="collection-category">{item.category}</p>
+                <div className="collection-info-text">
+                  <h3 className="collection-name">{item.name}</h3>
+                  <p className="collection-category">{item.category}</p>
+                </div>
+                <span className="collection-info-arrow" aria-hidden="true">→</span>
               </div>
             </Link>
           ))}

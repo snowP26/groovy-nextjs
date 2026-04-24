@@ -6,14 +6,20 @@ import { usePathname } from "next/navigation";
 export default function Header() {
     const pathname = usePathname();
     const isCollection = pathname === "/collection";
+    const isProduct = pathname.startsWith("/collection/");
 
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                groovy.
+                Groovy.
             </Link>
             <ul className="nav-links">
-                {isCollection ? (
+                {isProduct ? (
+                    <>
+                        <li><Link href="/">Home</Link></li>
+                        <li><Link href="/collection">Collection</Link></li>
+                    </>
+                ) : isCollection ? (
                     <li><Link href="/">Home</Link></li>
                 ) : (
                     <>
