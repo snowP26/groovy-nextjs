@@ -11,7 +11,7 @@ export default function Header() {
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                groovy.
+                Groovy.
             </Link>
             <ul className="nav-links">
                 {isProduct ? (

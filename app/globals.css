@@ -113,10 +113,10 @@ a {
 }
 
 .nav-logo {
-  font-family: var(--font-display);
+  font-family: var(--font-allura);
   font-size: 1.5rem;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .nav-links {
@@ -225,7 +225,9 @@ a {
 }
 
 .hero-title {
+  font-family: var(--font-allura);
   font-size: clamp(4rem, 15vw, 12rem);
+  -webkit-text-stroke: 1.5px currentColor;
   line-height: 0.9;
   margin-bottom: 2rem;
   opacity: 0;
@@ -996,8 +998,9 @@ a {
 }
 
 .footer-logo {
-  font-family: var(--font-display);
+  font-family: var(--font-allura);
   font-size: 1.5rem;
+  font-weight: 400;
   color: var(--color-black);
 }
 
@@ -1080,6 +1083,14 @@ a {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Responsive */
@@ -1180,8 +1191,9 @@ a {
 }
 
 .loader-text {
-  font-family: var(--font-display);
+  font-family: var(--font-allura);
   font-size: 3rem;
+  -webkit-text-stroke: 1.5px currentColor;
   color: var(--color-black);
   overflow: hidden;
 }

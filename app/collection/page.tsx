@@ -82,12 +82,16 @@ export default function CollectionPage() {
       leave: EventListener;
     }> = [];
     document.querySelectorAll<HTMLElement>(".btn").forEach((button) => {
+      let magneticRaf = 0;
       const move = (event: Event) => {
         const mouseEvent = event as MouseEvent;
-        const rect = button.getBoundingClientRect();
-        const x = mouseEvent.clientX - rect.left - rect.width / 2;
-        const y = mouseEvent.clientY - rect.top - rect.height / 2;
-        button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        cancelAnimationFrame(magneticRaf);
+        magneticRaf = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          const x = mouseEvent.clientX - rect.left - rect.width / 2;
+          const y = mouseEvent.clientY - rect.top - rect.height / 2;
+          button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
       };
       const leave = () => {
         button.style.transform = "";
