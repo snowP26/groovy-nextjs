@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "./components/product-card";
 import Swal from "sweetalert2";
 
-const CONTACT_EMAIL = "groovyclothingph@gmail.com";
+const CONTACT_EMAIL = "shop@groovyph.com";
 
 const FAQS = [
   {
