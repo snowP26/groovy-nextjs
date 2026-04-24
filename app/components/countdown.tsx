@@ -3,11 +3,14 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-
+// Target date remains constant
 const DROP_DATE = new Date("2026-04-25T20:00:00+08:00");
 
-function getTimeLeft() {
-  const diff = DROP_DATE.getTime() - Date.now();
+function getTimeLeft(serverOffset: number) {
+  // adjust Date.now() by the pre-calculated server offset
+  const adjustedNow = Date.now() + serverOffset;
+  const diff = DROP_DATE.getTime() - adjustedNow;
+  
   if (diff <= 0) return null;
   return {
     hours: Math.floor(diff / 1000 / 60 / 60),
@@ -23,15 +26,43 @@ function pad(n: number) {
 export default function Countdown() {
   const [timeLeft, setTimeLeft] = useState<ReturnType<typeof getTimeLeft>>(null);
   const [expired, setExpired] = useState(false);
+  const [serverOffset, setServerOffset] = useState<number | null>(null);
 
   useEffect(() => {
-    const t = getTimeLeft();
-    if (!t) { setExpired(true); return; }
-    setTimeLeft(t);
+    async function syncTime() {
+      try {
+        // Fetch from a public API or your own /api/time route
+        const response = await fetch("https://worldtimeapi.org/api/timezone/Etc/UTC");
+        const data = await response.json();
+        const actualServerTime = new Date(data.datetime).getTime();
+        
+        // Calculate how far off the user's local clock is
+        const offset = actualServerTime - Date.now();
+        setServerOffset(offset);
+
+        // Initial check
+        const initial = getTimeLeft(offset);
+        if (!initial) {
+          setExpired(true);
+        } else {
+          setTimeLeft(initial);
+        }
+      } catch (error) {
+        console.error("Failed to sync server time, falling back to local:", error);
+        setServerOffset(0); // Fallback to local if API is down
+      }
+    }
+
+    syncTime();
+  }, []);
+
+  useEffect(() => {
+    if (serverOffset === null || expired) return;
 
     const id = setInterval(() => {
-      const next = getTimeLeft();
+      const next = getTimeLeft(serverOffset);
       setTimeLeft(next);
+      
       if (!next) {
         clearInterval(id);
         window.sessionStorage.removeItem("groovy-home-loader-seen");
@@ -39,8 +70,9 @@ export default function Countdown() {
         setExpired(true);
       }
     }, 1000);
+
     return () => clearInterval(id);
-  }, []);
+  }, [serverOffset, expired]);
 
   if (expired) return null;
 
