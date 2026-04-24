@@ -238,14 +238,7 @@ export default function Home() {
 
   return (
     <div>
-
-
-
-
-
-      {/* Hero Section */}
       <section className="hero" id="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/groovy-bg.svg" alt="" className="hero-bg" />
         <div className="hero-content">
           <p className="hero-tagline"></p>
