@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 
-const DROP_DATE = new Date("2026-05-25T20:00:00+08:00");
+const DROP_DATE = new Date("2026-04-25T20:00:00+08:00");
 
 function getTimeLeft() {
   const diff = DROP_DATE.getTime() - Date.now();
