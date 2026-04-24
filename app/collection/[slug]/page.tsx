@@ -9,7 +9,6 @@ import MuiLink from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
 const INSTAGRAM_ORDER_LINK = "https://www.instagram.com/direct/t/110039370511793";
-const SIZE_CHART_IMAGE = "/assets/size-chart.jpg";
 
 const PRODUCT_BY_SLUG: Record<
     string,
@@ -21,6 +20,9 @@ const PRODUCT_BY_SLUG: Record<
             alt: string;
         }>;
         sizes: string[];
+        features: string[];
+        colorVariants?: string[];
+        sizeChart?: Array<{ size: string; measurements: string }>;
     }
 > = {
     "embroidered-longsleeves": {
@@ -32,6 +34,15 @@ const PRODUCT_BY_SLUG: Record<
             { src: "/assets/longsleeve/3.jpg", alt: "Embroidered Longsleeves white" },
         ],
         sizes: ["S", "M", "L", "XL"],
+        features: ["Waffle fabric", "Structured Fit", "Clean finish", "Elevated basic"],
+        colorVariants: ["Black", "White"],
+        sizeChart: [
+            { size: "S",   measurements: "24.5 × 21.5" },
+            { size: "M",   measurements: "25.5 × 22" },
+            { size: "L",   measurements: "27 × 22.5" },
+            { size: "XL",  measurements: "28.5 × 23.5" },
+            { size: "XXL", measurements: "29.5 × 26" },
+        ],
     },
     "embroidered-tee": {
         name: "Embroidered Tee",
@@ -42,7 +53,15 @@ const PRODUCT_BY_SLUG: Record<
             { src: "/assets/embroid/2.jpg", alt: "Embroidered Tee black 2" },
             { src: "/assets/embroid/3.jpg", alt: "Embroidered Tee white" },
         ],
-        sizes: ["S", "M", "L"],
+        sizes: ["S", "M", "L", "XL"],
+        features: ["Oversized fit", "Premium cotton", "Structured Fit", "Everyday essential"],
+        colorVariants: ["Black", "White"],
+        sizeChart: [
+            { size: "S",  measurements: "23.5 × 25.5 × 9.5" },
+            { size: "M",  measurements: "24.5 × 26.5 × 10" },
+            { size: "L",  measurements: "24.5 × 27 × 11" },
+            { size: "XL", measurements: "26.5 × 29 × 12" },
+        ],
     },
     "graphic-tee": {
         name: "Graphic Tee",
@@ -55,6 +74,14 @@ const PRODUCT_BY_SLUG: Record<
             { src: "/assets/graphic/4.jpg", alt: "Graphic Tee white product" },
         ],
         sizes: ["S", "M", "L", "XL"],
+        features: ["Oversized fit", "Premium cotton", "Structured Fit", "Everyday essential"],
+        colorVariants: ["Black", "White"],
+        sizeChart: [
+            { size: "S",  measurements: "23.5 × 25.5 × 9.5" },
+            { size: "M",  measurements: "24.5 × 26.5 × 10" },
+            { size: "L",  measurements: "24.5 × 27 × 11" },
+            { size: "XL", measurements: "26.5 × 29 × 12" },
+        ],
     },
     "plaid-polo": {
         name: "Plaid Polo",
@@ -66,6 +93,13 @@ const PRODUCT_BY_SLUG: Record<
             { src: "/assets/plaid/3.jpg", alt: "Plaid Longsleeves" },
         ],
         sizes: ["S", "M", "L", "XL"],
+        features: ["Waffle fabric", "Structured Fit", "Clean finish", "Elevated basic"],
+        sizeChart: [
+            { size: "S",  measurements: "22 × 23 × 9.5" },
+            { size: "M",  measurements: "22 × 25 × 10" },
+            { size: "L",  measurements: "22.5 × 25.5 × 10.5" },
+            { size: "XL", measurements: "24 × 26 × 11" },
+        ],
     },
 };
 
@@ -74,48 +108,34 @@ const SLUG_ALIAS: Record<string, string> = {
     "graphic-tee-white": "graphic-tee",
 };
 
+const PLAID_VARIANTS = [
+    {
+        key: "polo",
+        label: "Polo",
+        name: "Plaid Polo",
+        price: 1650,
+        imageIndices: [2, 3],
+    },
+    {
+        key: "longsleeves",
+        label: "Longsleeves",
+        name: "Plaid Longsleeves",
+        price: 1950,
+        imageIndices: [0, 1],
+    },
+];
+
 export default function Product() {
-    const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [selectedPlaidVariant, setSelectedPlaidVariant] = useState<"longsleeves" | "polo">("polo");
     const params = useParams<{ slug: string }>();
     const slug = typeof params.slug === "string" ? params.slug : "";
     const normalizedSlug = SLUG_ALIAS[slug] ?? slug;
     const product = PRODUCT_BY_SLUG[normalizedSlug];
 
     useEffect(() => {
-        const originalOverflow = document.body.style.overflow;
-
-        if (isSizeChartOpen) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = originalOverflow;
-        }
-
-        return () => {
-            document.body.style.overflow = originalOverflow;
-        }
-    }, [isSizeChartOpen]);
-
-    useEffect(() => {
-        if (!isSizeChartOpen) {
-            return;
-        }
-
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                setIsSizeChartOpen(false);
-            }
-        };
-
-        window.addEventListener("keydown", onKeyDown);
-        return () => {
-            window.removeEventListener("keydown", onKeyDown);
-        };
-    }, [isSizeChartOpen]);
-
-    useEffect(() => {
         setActiveImageIndex(0);
-    }, [normalizedSlug]);
+    }, [normalizedSlug, selectedPlaidVariant]);
 
     if (!product) {
         return (
@@ -132,13 +152,16 @@ export default function Product() {
         );
     }
 
-    const totalImages = product.images.length;
-    const activeImage = product.images[activeImageIndex] ?? product.images[0];
+    const isPlaid = normalizedSlug === "plaid-polo";
+    const activePlaidVariant = PLAID_VARIANTS.find((v) => v.key === selectedPlaidVariant)!;
+    const visibleImages = isPlaid
+        ? activePlaidVariant.imageIndices.map((i) => product.images[i])
+        : product.images;
+    const totalImages = visibleImages.length;
+    const activeImage = visibleImages[activeImageIndex] ?? visibleImages[0];
     const showCarouselControls = totalImages > 1;
-
-    const isLongsleevesVariant = normalizedSlug === "plaid-polo" && activeImageIndex >= 2;
-    const displayName = isLongsleevesVariant ? "Plaid Longsleeves" : product.name;
-    const displayPrice = isLongsleevesVariant ? 1950 : product.price;
+    const displayName = isPlaid ? activePlaidVariant.name : product.name;
+    const displayPrice = isPlaid ? activePlaidVariant.price : product.price;
 
     const goToPreviousImage = () => {
         setActiveImageIndex((prev) => (prev === 0 ? totalImages - 1 : prev - 1));
@@ -150,38 +173,41 @@ export default function Product() {
 
     return (
         <>
+            <Breadcrumbs
+                aria-label="breadcrumb"
+                separator="/"
+                sx={{
+                    px: { xs: "1.25rem", md: "1.75rem" },
+                    pt: { xs: "1rem", md: "2rem" },
+                    pb: 0,
+                    backgroundColor: "var(--color-cream)",
+                    "& .MuiLink-root, & .MuiTypography-root": {
+                        fontSize: "0.75rem",
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        color: "var(--color-warm-gray)",
+                    },
+                }}
+            >
+                <MuiLink component={Link} underline="hover" color="inherit" href="/">
+                    Home
+                </MuiLink>
+                <MuiLink component={Link} underline="hover" color="inherit" href="/collection">
+                    Collection
+                </MuiLink>
+                <Typography
+                    color="text.primary"
+                    sx={{
+                        fontWeight: 700,
+                        textDecoration: "underline",
+                        textUnderlineOffset: "0.18em",
+                    }}
+                >
+                    {displayName}
+                </Typography>
+            </Breadcrumbs>
             <section className="product-scaffold">
                 <div className="product-scaffold-image product-carousel">
-                    <Breadcrumbs
-                        aria-label="breadcrumb"
-                        separator="/"
-                        sx={{
-                            mb: 0.6,
-                            "& .MuiLink-root, & .MuiTypography-root": {
-                                fontSize: "0.75rem",
-                                letterSpacing: "0.08em",
-                                textTransform: "uppercase",
-                                color: "var(--color-warm-gray)",
-                            },
-                        }}
-                    >
-                        <MuiLink component={Link} underline="hover" color="inherit" href="/">
-                            Home
-                        </MuiLink>
-                        <MuiLink component={Link} underline="hover" color="inherit" href="/collection">
-                            Collection
-                        </MuiLink>
-                        <Typography
-                            color="text.primary"
-                            sx={{
-                                fontWeight: 700,
-                                textDecoration: "underline",
-                                textUnderlineOffset: "0.18em",
-                            }}
-                        >
-                            {displayName}
-                        </Typography>
-                    </Breadcrumbs>
                     <div className="product-carousel-stage">
                         <Image
                             src={activeImage.src}
@@ -217,43 +243,100 @@ export default function Product() {
                     </div>
 
                     {showCarouselControls ? (
-                        <div className="product-carousel-thumbs" role="tablist" aria-label="Product image previews">
-                            {product.images.map((image, index) => (
-                                <button
-                                    key={image.src}
-                                    type="button"
-                                    className={`product-carousel-thumb${index === activeImageIndex ? " is-active" : ""}`}
-                                    onClick={() => setActiveImageIndex(index)}
-                                    aria-label={`Show image ${index + 1}`}
-                                    aria-selected={index === activeImageIndex}
-                                >
-                                    <Image src={image.src} alt={image.alt} width={120} height={120} quality={70} sizes="72px" />
-                                </button>
-                            ))}
-                        </div>
+                        <>
+                            <div className="product-carousel-thumbs" role="tablist" aria-label="Product image previews">
+                                {visibleImages.map((image, index) => (
+                                    <button
+                                        key={image.src}
+                                        type="button"
+                                        className={`product-carousel-thumb${index === activeImageIndex ? " is-active" : ""}`}
+                                        onClick={() => setActiveImageIndex(index)}
+                                        aria-label={`Show image ${index + 1}`}
+                                        aria-selected={index === activeImageIndex}
+                                    >
+                                        <Image src={image.src} alt={image.alt} width={120} height={120} quality={70} sizes="72px" />
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="product-carousel-count">
+                                {activeImageIndex + 1} / {totalImages}
+                            </p>
+                        </>
                     ) : null}
                 </div>
 
                 <div className="product-scaffold-content">
-                    <p className="section-subtitle">Product</p>
-                    <h1 className="product-scaffold-title">{displayName}</h1>
-                    <p className="product-scaffold-price">₱{displayPrice.toLocaleString()}</p>
-                    {showCarouselControls ? (
-                        <p className="product-carousel-count">
-                            {activeImageIndex + 1} / {totalImages}
-                        </p>
-                    ) : null}
-
-                    <div className="product-scaffold-sizes">
-                        <p className="product-scaffold-label">Size available</p>
-                        <div className="product-scaffold-size-list" role="list" aria-label="Available sizes">
-                            {product.sizes.map((size) => (
-                                <span key={size} className="product-scaffold-size" role="listitem">
-                                    {size}
-                                </span>
+                    {isPlaid ? (
+                        <div className="product-variant-selector">
+                            {PLAID_VARIANTS.map((v) => (
+                                <button
+                                    key={v.key}
+                                    type="button"
+                                    className={`product-variant-btn${selectedPlaidVariant === v.key ? " is-active" : ""}`}
+                                    onClick={() => setSelectedPlaidVariant(v.key as "longsleeves" | "polo")}
+                                >
+                                    {v.label}
+                                </button>
                             ))}
                         </div>
-                    </div>
+                    ) : null}
+                    <h1 className="product-scaffold-title">{displayName}</h1>
+                    <p className="product-scaffold-price">₱{displayPrice.toLocaleString()}</p>
+
+                    <ul className="product-scaffold-features">
+                        {product.features.map((f) => (
+                            <li key={f}>{f}</li>
+                        ))}
+                    </ul>
+
+                    {!product.sizeChart ? (
+                        <div className="product-scaffold-sizes">
+                            <p className="product-scaffold-label">Size available</p>
+                            <div className="product-scaffold-size-list" role="list" aria-label="Available sizes">
+                                {product.sizes.map((size) => (
+                                    <span key={size} className="product-scaffold-size" role="listitem">
+                                        {size}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
+
+                    {product.colorVariants ? (
+                        <div className="product-color-variants">
+                            <p className="product-scaffold-label">Available Colors</p>
+                            <div className="product-color-variant-list">
+                                {product.colorVariants.map((color) => (
+                                    <div key={color} className="product-color-variant">
+                                        <span
+                                            className="product-color-swatch"
+                                            style={{ backgroundColor: color === "Black" ? "var(--color-black)" : "var(--color-surface)" }}
+                                        />
+                                        <span className="product-color-label">{color}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
+
+                    {product.sizeChart ? (
+                        <div className="product-size-chart">
+                            <p className="product-scaffold-label">
+                                Size Chart <span className="product-size-chart-unit">in inches</span>
+                            </p>
+                            <div
+                                className="product-size-chart-grid"
+                                style={{ "--size-chart-cols": product.sizeChart.length } as React.CSSProperties}
+                            >
+                                {product.sizeChart.map((row) => (
+                                    <div key={row.size} className="product-size-chart-card">
+                                        <span className="product-size-chart-card-size">{row.size}</span>
+                                        <span className="product-size-chart-card-measurements">{row.measurements}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
 
                     <div className="product-scaffold-actions">
                         <Link
@@ -263,48 +346,12 @@ export default function Product() {
                             rel="noopener noreferrer"
                         >
                             Order Now
+                            <span className="product-scaffold-cta-sub">via Instagram</span>
                         </Link>
-                        <button
-                            type="button"
-                            className="product-scaffold-size-chart-link"
-                            onClick={() => setIsSizeChartOpen(true)}
-                        >
-                            Size Chart
-                        </button>
                     </div>
                 </div>
             </section>
 
-            {isSizeChartOpen ? (
-                <div className="size-chart-modal-overlay" role="presentation" onClick={() => setIsSizeChartOpen(false)}>
-                    <div
-                        className="size-chart-modal"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Size chart"
-                        onClick={(event) => event.stopPropagation()}
-                    >
-                        <button
-                            type="button"
-                            className="size-chart-modal-close"
-                            aria-label="Close size chart"
-                            onClick={() => setIsSizeChartOpen(false)}
-                        >
-                            ✕
-                        </button>
-                        <div className="size-chart-modal-image-wrap">
-                            <Image
-                                src={SIZE_CHART_IMAGE}
-                                alt="Groovy size chart"
-                                width={1200}
-                                height={1600}
-                                quality={90}
-                                sizes="(max-width: 900px) 92vw, 70vw"
-                            />
-                        </div>
-                    </div>
-                </div>
-            ) : null}
         </>
     );
 }
