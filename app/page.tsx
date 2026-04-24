@@ -45,24 +45,28 @@ const FEATURED_PRODUCTS = [
     alt: "Embroidered Longsleeves",
     name: "Embroidered Longsleeves",
     price: "₱1290.00",
+    redirect: "/collection/embroidered-longsleeves",
   },
   {
     src: "/assets/shop-black-1.jpg",
     alt: "Graphic Tee Black",
     name: "Graphic Tee — Black",
     price: "₱850.00",
+    redirect: "/collection/graphic-tee",
   },
   {
     src: "/assets/shop-partner-2.jpg",
     alt: "Embroidered Tee",
     name: "Embroidered Tee",
     price: "₱790.00",
+    redirect: "/collection/embroidered-tee",
   },
   {
     src: "/assets/shop-white-1.jpg",
     alt: "Graphic Tee White",
     name: "Graphic Tee — White",
     price: "₱850.00",
+    redirect: "/collection/graphic-tee",
   },
 ];
 
@@ -238,14 +242,7 @@ export default function Home() {
 
   return (
     <div>
-
-
-
-
-
-      {/* Hero Section */}
       <section className="hero" id="hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/groovy-bg.svg" alt="" className="hero-bg" />
         <div className="hero-content">
           <p className="hero-tagline"></p>
@@ -288,6 +285,7 @@ export default function Home() {
               alt={product.alt}
               name={product.name}
               price={product.price}
+              redirect={product.redirect}
             />
           ))}
         </div>
