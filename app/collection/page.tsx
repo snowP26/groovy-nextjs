@@ -45,7 +45,7 @@ const ITEMS = [
 export default function CollectionPage() {
 
   useEffect(() => {
-    let rafId = 0;
+    const rafId = 0;
 
     const revealElements = document.querySelectorAll<HTMLElement>(".reveal");
 
