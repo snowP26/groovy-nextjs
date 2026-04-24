@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import MuiLink from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 const ITEMS = [
   {
@@ -34,7 +37,7 @@ const ITEMS = [
     category: "Metamorphosis",
     tag: "Tops",
     slug: "plaid-polo",
-    image: "/assets/plaid-polo-female-1.jpg",
+    image: "/assets/plaid/2.jpg",
     alt: "Plaid Polo",
   },
 ];
@@ -112,9 +115,34 @@ export default function CollectionPage() {
       {/* Page Hero */}
       <div className="collection-page-hero reveal">
         <div className="collection-page-hero-left">
-          <Link href="/" className="collection-back-link">
-            ← back
-          </Link>
+          <Breadcrumbs
+            aria-label="breadcrumb"
+            separator="/"
+            sx={{
+              mb: 1,
+              "& .MuiLink-root, & .MuiTypography-root": {
+                fontSize: "0.75rem",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--color-warm-gray)",
+              },
+            }}
+          >
+            <MuiLink component={Link} underline="hover" color="inherit" href="/">
+              Home
+            </MuiLink>
+            <Typography
+              color="text.primary"
+              sx={{
+                fontWeight: 700,
+                textDecoration: "underline",
+                textUnderlineOffset: "0.18em",
+              }}
+            >
+              Collection
+            </Typography>
+          </Breadcrumbs>
+
           <p className="section-subtitle">Latest Drop</p>
           <h1 className="collection-page-title">Metamorphosis</h1>
         </div>
