@@ -10,6 +10,18 @@ export default function InitialLoader() {
     const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
 
+    const show = () => {
+        setIsVisible(true);
+        document.body.style.overflow = "hidden";
+        document.body.classList.remove("page-reveal");
+        window.setTimeout(() => {
+            setIsVisible(false);
+            document.body.style.overflow = "";
+            document.body.classList.add("page-reveal");
+            window.sessionStorage.setItem(HOME_LOADER_SEEN_KEY, "1");
+        }, LOADER_DURATION_MS);
+    };
+
     useEffect(() => {
         if (pathname !== "/") {
             setIsVisible(false);
@@ -17,24 +29,11 @@ export default function InitialLoader() {
         }
 
         const hasSeenLoader = window.sessionStorage.getItem(HOME_LOADER_SEEN_KEY) === "1";
-        if (hasSeenLoader) {
-            setIsVisible(false);
-            return;
-        }
+        if (!hasSeenLoader) show();
 
-        setIsVisible(true);
-        document.body.style.overflow = "hidden";
-
-        const timerId = window.setTimeout(() => {
-            setIsVisible(false);
-            document.body.style.overflow = "";
-            window.sessionStorage.setItem(HOME_LOADER_SEEN_KEY, "1");
-        }, LOADER_DURATION_MS);
-
-        return () => {
-            window.clearTimeout(timerId);
-            document.body.style.overflow = "";
-        };
+        const onCountdownExpired = () => show();
+        window.addEventListener("groovy:countdown-expired", onCountdownExpired);
+        return () => window.removeEventListener("groovy:countdown-expired", onCountdownExpired);
     }, [pathname]);
 
     if (!isVisible) {

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -11,7 +12,13 @@ export default function Header() {
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                Groovy.
+                <Image
+                    src="/assets/groovy-icon.png"
+                    alt="Groovy"
+                    className="nav-logo-image"
+                    fill
+                    priority
+                />
             </Link>
             <ul className="nav-links">
                 {isProduct ? (
