@@ -129,7 +129,7 @@ export default function RootLayout({
           }}
         />
         <Countdown />
-        <InitialLoader />
+        {/* <InitialLoader /> */}
         <Header />
         <main className="site-main">{children}</main>
         <Footer />
