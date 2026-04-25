@@ -33,7 +33,7 @@ const ITEMS = [
     alt: "Embroidered Tee",
   },
   {
-    name: "Plaid Longsleeves Polo",
+    name: "Plaid Longsleeves",
     category: "Metamorphosis",
     tag: "Tops",
     slug: "plaid-polo",
