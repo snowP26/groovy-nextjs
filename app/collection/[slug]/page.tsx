@@ -356,6 +356,16 @@ export default function Product() {
                         <a
                             href="https://ig.me/m/groovyph_"
                             className="btn product-scaffold-cta"
+                            onClick={(e) => {
+                                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                if (isMobile) {
+                                    e.preventDefault();
+                                    window.location.href = "instagram://user?username=groovyph_";
+                                    setTimeout(() => {
+                                        window.location.href = "https://ig.me/m/groovyph_";
+                                    }, 1500);
+                                }
+                            }}
                         >
                             Order Now
                             <span className="product-scaffold-cta-sub">via Instagram DM</span>
