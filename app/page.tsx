@@ -195,7 +195,7 @@ export default function Home() {
                 <div className="hero-content">
                     <h1 className="hero-title">
                         <Image
-                            src="/assets/text-icon.svg"
+                            src="/assets/text-icon.png"
                             alt="Groovy"
                             className="hero-title-image"
                             width={1200}
