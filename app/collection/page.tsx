@@ -179,7 +179,11 @@ export default function CollectionPage() {
                   <h3 className="collection-name">{item.name}</h3>
                   <p className="collection-category">{item.category}</p>
                 </div>
-                <span className="collection-info-arrow" aria-hidden="true">→</span>
+                <span className="collection-info-arrow" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width={16} height={16}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                  </svg>
+                </span>
               </div>
             </Link>
           ))}
