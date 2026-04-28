@@ -313,7 +313,7 @@ export default function Home() {
                         </div>
                         <div className="contact-item">
                             <p className="contact-label">Location</p>
-                            <p className="contact-value">Naga City, Philippines</p>
+                            <p className="contact-value">Manila, Philippines</p>
                         </div>
                     </div>
                     <div className="social-links">
