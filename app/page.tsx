@@ -5,3 +5,4 @@ export default async function Home() {
     const products = await getProducts(4);
     return <HomeClient featuredProducts={products} />;
 }
+
