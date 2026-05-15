@@ -80,7 +80,7 @@ const PRODUCTS_QUERY = `
 
 const PRODUCT_BY_HANDLE_QUERY = `
   query GetProductByHandle($handle: String!) {
-    productByHandle(handle: $handle) {
+    product(handle: $handle) {
       id
       handle
       title
@@ -238,8 +238,8 @@ export async function getProductByHandle(
     { variables: { handle } }
   );
   if (errors) throw new Error(JSON.stringify(errors));
-  const node = (data as { productByHandle: Record<string, unknown> | null })
-    .productByHandle;
+  const node = (data as { product: Record<string, unknown> | null })
+    .product;
   if (!node) return null;
   return normalizeProduct(node);
 }
