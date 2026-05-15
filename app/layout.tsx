@@ -4,7 +4,8 @@ import "./globals.css";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import InitialLoader from "./components/initial-loader";
-import Countdown from "./components/countdown";
+import { CartProvider } from "./context/cart";
+import CartDrawer from "./components/cart-drawer";
 
 const SOCIAL_PROFILES = [
   "https://www.instagram.com/groovyph_/",
@@ -128,11 +129,13 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* <Countdown /> */}
-        <InitialLoader />
-        <Header />
-        <main className="site-main">{children}</main>
-        <Footer />
+        <CartProvider>
+          <InitialLoader />
+          <Header />
+          <CartDrawer />
+          <main className="site-main">{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
