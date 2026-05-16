@@ -3,73 +3,141 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import type { ShopifyProduct, ShopifyVariant } from "../../lib/shopify";
 import { useCart } from "../context/cart";
 
-function getColors(variants: ShopifyVariant[]): string[] {
-    const colors = new Set<string>();
-    for (const v of variants) {
-        const colorOpt = v.selectedOptions.find((o) => o.name === "Color");
-        if (colorOpt) colors.add(colorOpt.value);
-    }
-    return Array.from(colors);
+function showToast(icon: "success" | "error", title: string) {
+    Swal.mixin({
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    }).fire({ icon, title });
 }
 
-function getSizes(variants: ShopifyVariant[], color: string | null): string[] {
+// Maps product handle + option value → image filename stem (Shopify CDN flattens / to _)
+const VARIANT_IMAGE_MAP: Record<string, Record<string, string>> = {
+    "embroidered-longsleeves": { White: "longsleeve_3", Black: "longsleeve_2" },
+    "graphic-tee":             { White: "graphic_2",    Black: "graphic_1" },
+    "embroidered-tee":         { White: "embroid_3",    Black: "embroid_2" },
+    "plaid":                   { Longsleeves: "plaid_1", Polo: "plaid_2" },
+};
+
+function findImageIndexByStem(
+    images: ShopifyProduct["images"],
+    stem: string
+): number {
+    const lower = stem.toLowerCase();
+    return images.findIndex((img) => img.url.split("?")[0].toLowerCase().includes(lower));
+}
+
+function getOptionNames(variants: ShopifyVariant[]): string[] {
+    const names: string[] = [];
+    for (const v of variants) {
+        for (const o of v.selectedOptions) {
+            if (!names.includes(o.name)) names.push(o.name);
+        }
+    }
+    return names;
+}
+
+function getOptionValues(variants: ShopifyVariant[], optionName: string): string[] {
+    const values: string[] = [];
+    for (const v of variants) {
+        const opt = v.selectedOptions.find((o) => o.name === optionName);
+        if (opt && !values.includes(opt.value)) values.push(opt.value);
+    }
+    return values;
+}
+
+function getAvailableSizes(
+    variants: ShopifyVariant[],
+    options: Record<string, string | null>
+): string[] {
     const sizes: string[] = [];
     for (const v of variants) {
-        const colorOpt = v.selectedOptions.find((o) => o.name === "Color");
+        const nonSizeMatch = Object.entries(options)
+            .filter(([name]) => name !== "Size")
+            .every(([name, value]) =>
+                !value || v.selectedOptions.some((o) => o.name === name && o.value === value)
+            );
+        if (!nonSizeMatch) continue;
         const sizeOpt = v.selectedOptions.find((o) => o.name === "Size");
-        if (!sizeOpt) continue;
-        if (!color || !colorOpt || colorOpt.value === color) {
-            if (!sizes.includes(sizeOpt.value)) sizes.push(sizeOpt.value);
-        }
+        if (sizeOpt && !sizes.includes(sizeOpt.value)) sizes.push(sizeOpt.value);
     }
     return sizes;
 }
 
-function findVariant(
+function findVariantByOptions(
     variants: ShopifyVariant[],
-    color: string | null,
-    size: string | null
+    options: Record<string, string | null>
 ): ShopifyVariant | null {
-    if (!color && !size) return variants[0] ?? null;
+    if (Object.values(options).every((v) => !v)) return variants[0] ?? null;
     return (
-        variants.find((v) => {
-            const colorOpt = v.selectedOptions.find((o) => o.name === "Color");
-            const sizeOpt = v.selectedOptions.find((o) => o.name === "Size");
-            const colorMatch = !color || (colorOpt && colorOpt.value === color);
-            const sizeMatch = !size || (sizeOpt && sizeOpt.value === size);
-            return colorMatch && sizeMatch;
-        }) ?? null
+        variants.find((v) =>
+            Object.entries(options).every(
+                ([name, value]) =>
+                    !value || v.selectedOptions.some((o) => o.name === name && o.value === value)
+            )
+        ) ?? null
     );
 }
 
+
 export default function ProductDetail({ product }: { product: ShopifyProduct }) {
-    const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [selectedColor, setSelectedColor] = useState<string | null>(null);
-    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const optionNames = getOptionNames(product.variants);
+    const hasColors = optionNames.includes("Color");
+    const hasSizes = optionNames.includes("Size");
+    const otherOptionNames = optionNames.filter((n) => n !== "Color" && n !== "Size");
+
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, string | null>>(() => {
+        const initial: Record<string, string | null> = {};
+        for (const name of optionNames) {
+            initial[name] = name === "Size" ? null : (getOptionValues(product.variants, name)[0] ?? null);
+        }
+        return initial;
+    });
+
+    const [activeImageIndex, setActiveImageIndex] = useState(() => {
+        const firstVisual = optionNames.find((n) => n !== "Size");
+        if (!firstVisual) return 0;
+        const firstValue = getOptionValues(product.variants, firstVisual)[0];
+        if (!firstValue) return 0;
+        // Try Shopify-assigned variant image first
+        const variantImage = product.variants.find((v) =>
+            v.selectedOptions.some((o) => o.name === firstVisual && o.value === firstValue)
+        )?.image;
+        if (variantImage) {
+            const idx = product.images.findIndex((img) => img.id === variantImage.id);
+            if (idx !== -1) return idx;
+        }
+        // Fall back to filename stem map
+        const stem = VARIANT_IMAGE_MAP[product.handle]?.[firstValue];
+        if (stem) {
+            const idx = findImageIndexByStem(product.images, stem);
+            if (idx !== -1) return idx;
+        }
+        return 0;
+    });
+
     const [quantity, setQuantity] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [feedback, setFeedback] = useState<{ type: "error" | "success"; message: string } | null>(null);
     const { addToCart } = useCart();
 
-    const colors = getColors(product.variants);
-    const hasColors = colors.length > 0;
-    const sizes = getSizes(product.variants, selectedColor);
-    const hasSizes = sizes.length > 0;
-
-    const activeVariant = findVariant(product.variants, selectedColor, selectedSize);
+    const colorValues = hasColors ? getOptionValues(product.variants, "Color") : [];
+    const sizeValues = hasSizes ? getAvailableSizes(product.variants, selectedOptions) : [];
+    const activeVariant = findVariantByOptions(product.variants, selectedOptions);
     const isAvailable = activeVariant?.availableForSale ?? false;
     const stockLeft = activeVariant?.quantityAvailable ?? 0;
 
     const totalImages = product.images.length;
     const activeImage = product.images[activeImageIndex] ?? product.images[0];
     const showCarouselControls = totalImages > 1;
-
     const price = parseFloat(product.priceRange.minVariantPrice.amount);
 
     useEffect(() => {
@@ -84,24 +152,52 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
         setActiveImageIndex((prev) => (prev === totalImages - 1 ? 0 : prev + 1));
     };
 
-    const handleAddToCart = async () => {
-        if (hasColors && !selectedColor) {
-            setFeedback({ type: "error", message: "Please select a color." });
-            return;
+    const switchToOptionImage = (optionName: string, value: string) => {
+        // Try Shopify-assigned variant image first
+        const variantImage = product.variants.find((v) =>
+            v.selectedOptions.some((o) => o.name === optionName && o.value === value)
+        )?.image;
+        if (variantImage) {
+            const idx = product.images.findIndex((img) => img.id === variantImage.id);
+            if (idx !== -1) { setActiveImageIndex(idx); return; }
         }
-        if (hasSizes && !selectedSize) {
-            setFeedback({ type: "error", message: "Please select a size." });
+        // Fall back to filename stem map
+        const stem = VARIANT_IMAGE_MAP[product.handle]?.[value];
+        if (!stem) return;
+        const idx = findImageIndexByStem(product.images, stem);
+        if (idx !== -1) setActiveImageIndex(idx);
+    };
+
+    const handleOptionSelect = (optionName: string, value: string) => {
+        setSelectedOptions((prev) => {
+            const next = { ...prev, [optionName]: value };
+            if (optionName !== "Size" && prev["Size"]) {
+                const available = getAvailableSizes(product.variants, next);
+                if (!available.includes(prev["Size"]!)) next["Size"] = null;
+            }
+            return next;
+        });
+        if (optionName !== "Size") switchToOptionImage(optionName, value);
+    };
+
+    const handleAddToCart = async () => {
+        for (const name of optionNames) {
+            if (name !== "Size" && !selectedOptions[name]) {
+                showToast("error", `Please select a ${name.toLowerCase()}.`);
+                return;
+            }
+        }
+        if (hasSizes && !selectedOptions["Size"]) {
+            showToast("error", "Please select a size.");
             return;
         }
         if (!activeVariant || !isAvailable) return;
         setIsLoading(true);
-        setFeedback(null);
         try {
             await addToCart(activeVariant.id, quantity);
-            setFeedback({ type: "success", message: "Added to cart!" });
-            setTimeout(() => setFeedback(null), 3000);
+            showToast("success", "Added to cart!");
         } catch {
-            setFeedback({ type: "error", message: "Something went wrong. Please try again." });
+            showToast("error", "Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -206,7 +302,7 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
 
                 <div className="product-scaffold-content">
                     <h1 className="product-scaffold-title">{product.title}</h1>
-                    <p className="product-scaffold-price"><span className="currency-label">PHP</span> {price.toLocaleString()}</p>
+                    <p className="product-scaffold-price"><span className="currency-label">PHP</span> {price.toLocaleString("en-PH")}</p>
 
                     {product.description ? (
                         <ul className="product-scaffold-features">
@@ -220,18 +316,12 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                         <div className="product-color-variants">
                             <p className="product-scaffold-label">Color</p>
                             <div className="product-color-variant-list">
-                                {colors.map((color) => (
+                                {colorValues.map((color) => (
                                     <button
                                         key={color}
                                         type="button"
-                                        className={`product-color-variant${selectedColor === color ? " is-active" : ""}`}
-                                        onClick={() => {
-                                            const availableSizes = getSizes(product.variants, color);
-                                            setSelectedColor(color);
-                                            if (selectedSize && !availableSizes.includes(selectedSize)) {
-                                                setSelectedSize(null);
-                                            }
-                                        }}
+                                        className={`product-color-variant${selectedOptions["Color"] === color ? " is-active" : ""}`}
+                                        onClick={() => handleOptionSelect("Color", color)}
                                     >
                                         <span
                                             className="product-color-swatch"
@@ -244,12 +334,35 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                         </div>
                     ) : null}
 
+                    {otherOptionNames.map((optionName) => {
+                        const values = getOptionValues(product.variants, optionName);
+                        return (
+                            <div key={optionName} className="product-scaffold-sizes">
+                                <p className="product-scaffold-label">{optionName}</p>
+                                <div className="product-scaffold-size-list" role="list" aria-label={`Available ${optionName.toLowerCase()}s`}>
+                                    {values.map((value) => (
+                                        <div key={value} className="product-scaffold-size-wrap">
+                                            <button
+                                                type="button"
+                                                role="listitem"
+                                                className={`product-scaffold-size${selectedOptions[optionName] === value ? " is-active" : ""}`}
+                                                onClick={() => handleOptionSelect(optionName, value)}
+                                            >
+                                                {value}
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
+
                     {hasSizes ? (
                         <div className="product-scaffold-sizes">
                             <p className="product-scaffold-label">Size</p>
                             <div className="product-scaffold-size-list" role="list" aria-label="Available sizes">
-                                {sizes.map((size) => {
-                                    const v = findVariant(product.variants, selectedColor, size);
+                                {sizeValues.map((size) => {
+                                    const v = findVariantByOptions(product.variants, { ...selectedOptions, Size: size });
                                     const available = v?.availableForSale ?? false;
                                     const stock = v?.quantityAvailable ?? 0;
                                     const isLow = available && stock > 0 && stock < 5;
@@ -258,8 +371,8 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                                             <button
                                                 type="button"
                                                 role="listitem"
-                                                className={`product-scaffold-size${selectedSize === size ? " is-active" : ""}${!available ? " is-disabled" : ""}`}
-                                                onClick={() => available && setSelectedSize(size)}
+                                                className={`product-scaffold-size${selectedOptions["Size"] === size ? " is-active" : ""}${!available ? " is-disabled" : ""}`}
+                                                onClick={() => available && handleOptionSelect("Size", size)}
                                                 disabled={!available}
                                                 aria-disabled={!available}
                                             >
@@ -294,7 +407,6 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                         </div>
                     </div>
 
-
                     <div className="product-scaffold-actions">
                         <button
                             type="button"
@@ -308,11 +420,6 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                                 ? "Out of Stock"
                                 : "Add to Cart"}
                         </button>
-                        {feedback ? (
-                            <p className={`product-add-feedback product-add-feedback--${feedback.type}`}>
-                                {feedback.message}
-                            </p>
-                        ) : null}
                     </div>
                 </div>
             </section>

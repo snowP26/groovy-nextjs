@@ -12,6 +12,7 @@ export type ShopifyVariant = {
   quantityAvailable: number;
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
+  image?: { id: string; url: string; altText: string | null };
 };
 
 export type ShopifyProduct = {
@@ -22,7 +23,7 @@ export type ShopifyProduct = {
   priceRange: {
     minVariantPrice: { amount: string; currencyCode: string };
   };
-  images: Array<{ url: string; altText: string | null }>;
+  images: Array<{ id: string; url: string; altText: string | null }>;
   variants: ShopifyVariant[];
 };
 
@@ -33,7 +34,9 @@ export type ShopifyCartLine = {
     id: string;
     title: string;
     price: { amount: string };
+    image?: { url: string; altText: string | null } | null;
     product: {
+      handle: string;
       title: string;
       images: { edges: Array<{ node: { url: string; altText: string | null } }> };
     };
@@ -59,7 +62,7 @@ const PRODUCTS_QUERY = `
             minVariantPrice { amount currencyCode }
           }
           images(first: 1) {
-            edges { node { url altText } }
+            edges { node { id url altText } }
           }
           variants(first: 30) {
             edges {
@@ -69,6 +72,7 @@ const PRODUCTS_QUERY = `
                 quantityAvailable
                 availableForSale
                 selectedOptions { name value }
+                image { id url altText }
               }
             }
           }
@@ -89,7 +93,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
         minVariantPrice { amount currencyCode }
       }
       images(first: 10) {
-        edges { node { url altText } }
+        edges { node { id url altText } }
       }
       variants(first: 30) {
         edges {
@@ -99,6 +103,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
             quantityAvailable
             availableForSale
             selectedOptions { name value }
+            image { url altText }
           }
         }
       }
@@ -120,9 +125,11 @@ const CART_FRAGMENT = `
               id
               title
               price { amount }
+              image { url altText }
               product {
+                handle
                 title
-                images(first: 1) {
+                images(first: 10) {
                   edges { node { url altText } }
                 }
               }
@@ -181,7 +188,7 @@ const CART_QUERY = `
 
 function normalizeProduct(node: Record<string, unknown>): ShopifyProduct {
   const imagesEdges = (
-    node.images as { edges: Array<{ node: { url: string; altText: string | null } }> }
+    node.images as { edges: Array<{ node: { id: string; url: string; altText: string | null } }> }
   ).edges;
   const variantsEdges = (
     node.variants as {
@@ -192,6 +199,7 @@ function normalizeProduct(node: Record<string, unknown>): ShopifyProduct {
           quantityAvailable: number;
           availableForSale: boolean;
           selectedOptions: Array<{ name: string; value: string }>;
+          image?: { id: string; url: string; altText: string | null };
         };
       }>;
     }
@@ -204,7 +212,10 @@ function normalizeProduct(node: Record<string, unknown>): ShopifyProduct {
     description: node.description as string,
     priceRange: node.priceRange as ShopifyProduct["priceRange"],
     images: imagesEdges.map((e) => e.node),
-    variants: variantsEdges.map((e) => e.node),
+    variants: variantsEdges.map((e) => ({
+      ...e.node,
+      image: e.node.image ?? undefined,
+    })),
   };
 }
 

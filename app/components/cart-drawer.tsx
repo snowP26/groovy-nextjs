@@ -39,7 +39,7 @@ export default function CartDrawer() {
                                                 src={line.imageUrl}
                                                 alt={line.imageAlt ?? line.productTitle}
                                                 width={80}
-                                                height={80}
+                                                height={96}
                                                 quality={70}
                                             />
                                         </div>
@@ -48,7 +48,7 @@ export default function CartDrawer() {
                                         <p className="cart-line-title">{line.productTitle}</p>
                                         <p className="cart-line-variant">{line.variantTitle}</p>
                                         <p className="cart-line-price">
-                                            <span className="currency-label">PHP</span> {(parseFloat(line.price) * line.quantity).toLocaleString()}
+                                            <span className="currency-label">PHP</span> {(parseFloat(line.price) * line.quantity).toLocaleString("en-PH")}
                                         </p>
                                         <div className="cart-line-qty">
                                             <button
