@@ -3553,28 +3553,6 @@ a {
   margin-bottom: 2.5rem;
 }
 
-.maintenance-building {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-warm-gray);
-  border: 1px solid var(--color-border);
-  padding: 0.45rem 0.85rem;
-  margin-bottom: 2.5rem;
-}
-
-@keyframes maintenance-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-.maintenance-building-dots {
-  animation: maintenance-blink 1.2s step-start infinite;
-}
-
 .maintenance-divider {
   width: 40px;
   height: 2px;
