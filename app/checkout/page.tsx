@@ -17,7 +17,7 @@ const PAYMENT_METHODS = [
       </svg>
     ),
     details: [
-      "GCash Number: 09XX-XXX-XXXX",
+      "GCash Number: 0961-184-0412",
       "Account Name: Groovy PH",
     ],
   },
@@ -34,7 +34,7 @@ const PAYMENT_METHODS = [
     details: [
       "Bank: BDO",
       "Account Name: Groovy PH",
-      "Account Number: XXXX-XXXX-XXXX",
+      "Account Number: 0084 4009 4790",
     ],
   },
 ];
