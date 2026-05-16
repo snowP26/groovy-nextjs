@@ -1,7 +1,13 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/checkout")) return null;
+
   return (
     <footer className="footer">
       <a href="/" className="footer-logo">Groovy.</a>
@@ -36,7 +42,6 @@ export default function Footer() {
             <FontAwesomeIcon icon={faTiktok} />
           </a>
         </div>
-
       </div>
     </footer>
   );

@@ -1,17 +1,13 @@
 import { MetadataRoute } from "next";
+import { getProducts } from "../lib/shopify";
 
 const BASE_URL = "https://www.groovyph.com";
 
-const productSlugs = [
-  "embroidered-longsleeves",
-  "graphic-tee",
-  "embroidered-tee",
-  "plaid-polo",
-];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const products = await getProducts(100);
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const productRoutes = productSlugs.map((slug) => ({
-    url: `${BASE_URL}/collection/${slug}`,
+  const productRoutes = products.map((product) => ({
+    url: `${BASE_URL}/collection/${product.handle}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.8,
