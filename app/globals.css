@@ -3566,19 +3566,13 @@ a {
   margin-bottom: 2.5rem;
 }
 
-@keyframes maintenance-pulse {
+@keyframes maintenance-blink {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.25; }
+  50%       { opacity: 0; }
 }
 
-.maintenance-building-dot {
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  animation: maintenance-pulse 1.6s ease-in-out infinite;
-  flex-shrink: 0;
+.maintenance-building-dots {
+  animation: maintenance-blink 1.2s step-start infinite;
 }
 
 .maintenance-divider {
