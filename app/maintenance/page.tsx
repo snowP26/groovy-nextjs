@@ -9,6 +9,10 @@ export default function MaintenancePage() {
                 <p className="maintenance-body">
                     Something good is coming. We&apos;re working on it.
                 </p>
+                <div className="maintenance-building">
+                    <span className="maintenance-building-dot" aria-hidden="true" />
+                    Building the new site
+                </div>
                 <div className="maintenance-divider" />
                 <p className="maintenance-contact">
                     Questions? Reach us at{" "}
