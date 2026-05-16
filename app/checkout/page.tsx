@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../context/cart";
 
+const SHIPPING_FEE = 150;
+
 const PAYMENT_METHODS = [
   {
     id: "gcash",
     label: "GCash",
+    qr: "/assets/payment/gcash_qr.jpg",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="5" y="2" width="14" height="20" rx="2" />
@@ -17,13 +20,14 @@ const PAYMENT_METHODS = [
       </svg>
     ),
     details: [
-      "GCash Number: 0961-184-0412",
-      "Account Name: Groovy PH",
+      { label: "GCash Number", value: "09611840412", copyable: true },
+      { label: "Account Name", value: "Groovy PH", copyable: false },
     ],
   },
   {
     id: "bank",
     label: "Bank Transfer",
+    qr: "/assets/payment/bdo_qr.jpg",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3" y="10" width="18" height="11" rx="1" />
@@ -32,9 +36,9 @@ const PAYMENT_METHODS = [
       </svg>
     ),
     details: [
-      "Bank: BDO",
-      "Account Name: Groovy PH",
-      "Account Number: 0084 4009 4790",
+      { label: "Bank", value: "BDO Unibank", copyable: false },
+      { label: "Account Name", value: "Groovy PH", copyable: false },
+      { label: "Account Number", value: "0084 4009 4790", copyable: true },
     ],
   },
 ];
@@ -60,9 +64,34 @@ const PH_PROVINCES = [
   "Zamboanga del Sur", "Zamboanga Sibugay",
 ];
 
+function CopyButton({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
+
+  return (
+    <button type="button" className="copy-btn" onClick={() => navigator.clipboard.writeText(value).then(() => setCopied(true))} aria-label={`Copy ${value}`}>
+      {copied ? (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Copied">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Copy">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
-  const { lines, totalQuantity, cartId, clearCart } = useCart();
+  const { lines, totalQuantity, clearCart } = useCart();
 
   const [contact, setContact] = useState({ email: "", phone: "" });
   const [shipping, setShipping] = useState({
@@ -75,6 +104,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
 
   const noDigits = (value: string) => !/\d/.test(value);
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -94,13 +124,11 @@ export default function CheckoutPage() {
     setFieldErrors((prev) => ({ ...prev, [name]: msg }));
   };
 
-  const total = lines.reduce(
-    (sum, l) => sum + parseFloat(l.price) * l.quantity, 0
-  );
-
+  const subtotal = lines.reduce((sum, l) => sum + parseFloat(l.price) * l.quantity, 0);
+  const grandTotal = subtotal + SHIPPING_FEE;
   const selectedPayment = PAYMENT_METHODS.find((m) => m.id === paymentMethod);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors: Record<string, string> = {
       email: validateField("email", contact.email),
@@ -122,6 +150,8 @@ export default function CheckoutPage() {
           shipping,
           paymentMethod: selectedPayment?.label,
           referenceNumber,
+          shippingFee: SHIPPING_FEE,
+          grandTotal,
           lines: lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })),
         }),
       });
@@ -148,6 +178,12 @@ export default function CheckoutPage() {
   return (
     <div className="checkout-page">
       <header className="checkout-header">
+        <button type="button" className="checkout-back-btn" onClick={() => router.back()} aria-label="Go back">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
         <Link href="/" className="checkout-logo" aria-label="Groovy — back to home">
           <span className="checkout-logo-text">Groovy.</span>
         </Link>
@@ -158,10 +194,12 @@ export default function CheckoutPage() {
         {/* Left column */}
         <div className="checkout-fields">
 
-
           {/* Contact */}
           <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">Contact</legend>
+            <legend className="checkout-legend">
+              <span className="checkout-legend-step">1</span>
+              Contact
+            </legend>
             <div className="checkout-row">
               <div className="checkout-field">
                 <input
@@ -193,7 +231,10 @@ export default function CheckoutPage() {
 
           {/* Delivery */}
           <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">Delivery</legend>
+            <legend className="checkout-legend">
+              <span className="checkout-legend-step">2</span>
+              Delivery
+            </legend>
             <div className="checkout-row">
               <div className="checkout-field">
                 <input
@@ -201,10 +242,7 @@ export default function CheckoutPage() {
                   className={`checkout-input${fieldErrors.firstName ? " checkout-input--error" : ""}`}
                   placeholder=" "
                   value={shipping.firstName}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\d/g, "");
-                    setShipping({ ...shipping, firstName: val });
-                  }}
+                  onChange={(e) => setShipping({ ...shipping, firstName: e.target.value.replace(/\d/g, "") })}
                   onBlur={(e) => handleFieldBlur("firstName", e.target.value)}
                 />
                 <label className="checkout-label" htmlFor="firstName">First Name</label>
@@ -216,10 +254,7 @@ export default function CheckoutPage() {
                   className={`checkout-input${fieldErrors.lastName ? " checkout-input--error" : ""}`}
                   placeholder=" "
                   value={shipping.lastName}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\d/g, "");
-                    setShipping({ ...shipping, lastName: val });
-                  }}
+                  onChange={(e) => setShipping({ ...shipping, lastName: e.target.value.replace(/\d/g, "") })}
                   onBlur={(e) => handleFieldBlur("lastName", e.target.value)}
                 />
                 <label className="checkout-label" htmlFor="lastName">Last Name</label>
@@ -267,10 +302,7 @@ export default function CheckoutPage() {
                   className="checkout-input"
                   placeholder=" "
                   value={shipping.city}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\d/g, "");
-                    setShipping({ ...shipping, city: val });
-                  }}
+                  onChange={(e) => setShipping({ ...shipping, city: e.target.value.replace(/\d/g, "") })}
                 />
                 <label className="checkout-label" htmlFor="city">City / Municipality</label>
               </div>
@@ -289,7 +321,10 @@ export default function CheckoutPage() {
 
           {/* Payment */}
           <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">Payment</legend>
+            <legend className="checkout-legend">
+              <span className="checkout-legend-step">3</span>
+              Payment
+            </legend>
             <div className="checkout-payment-methods">
               {PAYMENT_METHODS.map((method) => (
                 <button
@@ -309,11 +344,31 @@ export default function CheckoutPage() {
                 <p className="checkout-payment-instruction">
                   Send payment to the following, then enter your reference number below.
                 </p>
+
                 <ul className="checkout-payment-info">
                   {selectedPayment.details.map((d) => (
-                    <li key={d}>{d}</li>
+                    <li key={d.label} className="checkout-payment-info-row">
+                      <div className="checkout-payment-info-cell">
+                        <span className="checkout-payment-info-label">{d.label}</span>
+                        <span className="checkout-payment-info-value">{d.value}</span>
+                      </div>
+                      {d.copyable ? <CopyButton value={d.value} /> : null}
+                    </li>
                   ))}
                 </ul>
+
+                <button
+                  type="button"
+                  className="checkout-qr-btn"
+                  onClick={() => setQrOpen(true)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+                    <path d="M14 14h.01M14 17h.01M17 14h.01M17 17h3M20 14v.01" />
+                  </svg>
+                  Show QR Code
+                </button>
+
                 <div className="checkout-field">
                   <input
                     id="refNum" type="text" required
@@ -333,11 +388,7 @@ export default function CheckoutPage() {
           {error ? <p className="checkout-error" role="alert">{error}</p> : null}
 
           <div className="checkout-submit-group">
-            <button
-              type="submit"
-              className="checkout-submit-btn"
-              disabled={isSubmitting}
-            >
+            <button type="submit" className="checkout-submit-btn" disabled={isSubmitting}>
               {isSubmitting ? "Placing Order…" : "Complete Order"}
             </button>
             <p className="checkout-trust-line">
@@ -359,23 +410,13 @@ export default function CheckoutPage() {
           >
             <span className="checkout-summary-toggle-label">
               Order Summary
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`checkout-summary-chevron${summaryOpen ? " is-open" : ""}`}
-                aria-hidden="true"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`checkout-summary-chevron${summaryOpen ? " is-open" : ""}`} aria-hidden="true">
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </span>
-            <span className="checkout-summary-toggle-total"><span className="currency-label">PHP</span> {total.toLocaleString()}</span>
+            <span className="checkout-summary-toggle-total">
+              <span className="currency-label">PHP</span> {grandTotal.toLocaleString("en-PH")}
+            </span>
           </button>
 
           <div className={`checkout-summary-body${summaryOpen ? " is-open" : ""}`}>
@@ -386,13 +427,7 @@ export default function CheckoutPage() {
                     {line.imageUrl ? (
                       <div className="checkout-summary-image-wrap">
                         <div className="checkout-summary-image">
-                          <Image
-                            src={line.imageUrl}
-                            alt={line.imageAlt ?? line.productTitle}
-                            width={80}
-                            height={80}
-                            quality={70}
-                          />
+                          <Image src={line.imageUrl} alt={line.imageAlt ?? line.productTitle} width={80} height={96} quality={70} />
                         </div>
                         <span className="checkout-summary-qty">{line.quantity}</span>
                       </div>
@@ -402,23 +437,53 @@ export default function CheckoutPage() {
                       <p className="checkout-summary-variant">{line.variantTitle}</p>
                     </div>
                     <p className="checkout-summary-price">
-                      <span className="currency-label">PHP</span> {(parseFloat(line.price) * line.quantity).toLocaleString()}
+                      <span className="currency-label">PHP</span> {(parseFloat(line.price) * line.quantity).toLocaleString("en-PH")}
                     </p>
                   </li>
                 ))}
               </ul>
+
+              <div className="checkout-summary-breakdown">
+                <div className="checkout-summary-row">
+                  <span>Subtotal</span>
+                  <span><span className="currency-label">PHP</span> {subtotal.toLocaleString("en-PH")}</span>
+                </div>
+                <div className="checkout-summary-row">
+                  <span>Shipping</span>
+                  <span><span className="currency-label">PHP</span> {SHIPPING_FEE.toLocaleString("en-PH")}</span>
+                </div>
+              </div>
+
               <div className="checkout-summary-total">
                 <span>Total</span>
-                <span><span className="currency-label">PHP</span> {total.toLocaleString()}</span>
+                <span><span className="currency-label">PHP</span> {grandTotal.toLocaleString("en-PH")}</span>
               </div>
+
               <p className="checkout-summary-note">
-                Payment is verified manually. We'll confirm your order within 24 hours.
+                Payment is verified manually. We&apos;ll confirm your order within 24 hours.
               </p>
             </div>
           </div>
         </aside>
-
       </form>
+
+      {/* QR modal */}
+      {qrOpen && selectedPayment ? (
+        <div className="qr-modal-overlay" onClick={() => setQrOpen(false)}>
+          <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="qr-modal-close" onClick={() => setQrOpen(false)} aria-label="Close QR code">✕</button>
+            <p className="qr-modal-label">{selectedPayment.label}</p>
+            <Image
+              src={selectedPayment.qr}
+              alt={`${selectedPayment.label} QR code`}
+              width={400}
+              height={400}
+              quality={90}
+              className="qr-modal-image"
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

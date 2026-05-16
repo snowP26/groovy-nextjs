@@ -20,6 +20,11 @@ function showToast(icon: "success" | "error", title: string) {
     }).fire({ icon, title });
 }
 
+// Maps product handle + option value → price override (in PHP)
+const VARIANT_PRICE_MAP: Record<string, Record<string, number>> = {
+    "plaid": { Longsleeves: 1950, Polo: 1650 },
+};
+
 // Maps product handle + option value → image filename stem (Shopify CDN flattens / to _)
 const VARIANT_IMAGE_MAP: Record<string, Record<string, string>> = {
     "embroidered-longsleeves": { White: "longsleeve_3", Black: "longsleeve_2" },
@@ -138,7 +143,13 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
     const totalImages = product.images.length;
     const activeImage = product.images[activeImageIndex] ?? product.images[0];
     const showCarouselControls = totalImages > 1;
-    const price = parseFloat(product.priceRange.minVariantPrice.amount);
+    let price = parseFloat(activeVariant?.price?.amount ?? product.priceRange.minVariantPrice.amount);
+    for (const [name, value] of Object.entries(selectedOptions)) {
+        if (name !== "Size" && value) {
+            const override = VARIANT_PRICE_MAP[product.handle]?.[value];
+            if (override !== undefined) { price = override; break; }
+        }
+    }
 
     useEffect(() => {
         setActiveImageIndex(0);

@@ -12,6 +12,7 @@ export type ShopifyVariant = {
   quantityAvailable: number;
   availableForSale: boolean;
   selectedOptions: Array<{ name: string; value: string }>;
+  price: { amount: string };
   image?: { id: string; url: string; altText: string | null };
 };
 
@@ -72,6 +73,7 @@ const PRODUCTS_QUERY = `
                 quantityAvailable
                 availableForSale
                 selectedOptions { name value }
+                price { amount }
                 image { id url altText }
               }
             }
@@ -199,6 +201,7 @@ function normalizeProduct(node: Record<string, unknown>): ShopifyProduct {
           quantityAvailable: number;
           availableForSale: boolean;
           selectedOptions: Array<{ name: string; value: string }>;
+          price: { amount: string };
           image?: { id: string; url: string; altText: string | null };
         };
       }>;
