@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart } from "../context/cart";
+import { useCart } from "../../context/cart";
 
 const SHIPPING_FEE = 150;
 
@@ -355,6 +355,7 @@ export default function CheckoutPage() {
                       {d.copyable ? <CopyButton value={d.value} /> : null}
                     </li>
                   ))}
+                  
                 </ul>
 
                 <button

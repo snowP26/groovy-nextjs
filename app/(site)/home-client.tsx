@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
-import ProductCard from "./components/product-card";
-import type { ShopifyProduct } from "../lib/shopify";
+import ProductCard from "../components/product-card";
+import type { ShopifyProduct } from "../../lib/shopify";
 
 const CONTACT_EMAIL = "shop@groovyph.com";
 

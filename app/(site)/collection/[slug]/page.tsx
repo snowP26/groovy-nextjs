@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { getProductByHandle } from "../../../lib/shopify";
-import ProductDetail from "../../components/product-detail";
+import { getProductByHandle } from "../../../../lib/shopify";
+import ProductDetail from "../../../components/product-detail";
 
 const SLUG_ALIAS: Record<string, string> = {
     "graphic-tee-black": "graphic-tee",

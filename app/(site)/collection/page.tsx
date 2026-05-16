@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import CollectionAnimations from "../components/collection-animations";
-import CollectionBreadcrumb from "../components/collection-breadcrumb";
-import { getProducts } from "../../lib/shopify";
+import CollectionAnimations from "../../components/collection-animations";
+import CollectionBreadcrumb from "../../components/collection-breadcrumb";
+import { getProducts } from "../../../lib/shopify";
 
 export default async function CollectionPage() {
   const products = await getProducts(20);

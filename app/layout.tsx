@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Allura, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "./components/footer";
-import Header from "./components/header";
-import InitialLoader from "./components/initial-loader";
-import { CartProvider } from "./context/cart";
-import CartDrawer from "./components/cart-drawer";
 
 const SOCIAL_PROFILES = [
   "https://www.instagram.com/groovyph_/",
@@ -129,13 +124,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <CartProvider>
-          <InitialLoader />
-          <Header />
-          <CartDrawer />
-          <main className="site-main">{children}</main>
-          <Footer />
-        </CartProvider>
+        {children}
       </body>
     </html>
   );
