@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../../context/cart";
 
-const SHIPPING_FEE = 150;
+const SHIPPING_FEE = 155;
 
 const PAYMENT_METHODS = [
   {

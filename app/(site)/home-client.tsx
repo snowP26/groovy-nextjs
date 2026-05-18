@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebookF, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
 import ProductCard from "../components/product-card";
+import { InstagramIcon, FacebookIcon, TiktokIcon } from "../components/social-icons";
 import type { ShopifyProduct } from "../../lib/shopify";
 
 const CONTACT_EMAIL = "shop@groovyph.com";
@@ -144,11 +143,11 @@ export default function HomeClient({ featuredProducts }: { featuredProducts: Sho
                 <div className="hero-content">
                     <h1 className="hero-title">
                         <Image
-                            src="/assets/text-icon.png"
+                            src="/assets/groovy-icon.png"
                             alt="Groovy"
                             className="hero-title-image"
-                            width={1200}
-                            height={582}
+                            width={500}
+                            height={500}
                             priority
                         />
                     </h1>
@@ -276,7 +275,7 @@ export default function HomeClient({ featuredProducts }: { featuredProducts: Sho
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <FontAwesomeIcon icon={faInstagram} />
+                            <InstagramIcon />
                         </a>
                         <a
                             href="https://www.facebook.com/groovyclothing4400"
@@ -285,7 +284,7 @@ export default function HomeClient({ featuredProducts }: { featuredProducts: Sho
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <FontAwesomeIcon icon={faFacebookF} />
+                            <FacebookIcon />
                         </a>
                         <a
                             href="https://www.tiktok.com/@groovyph"
@@ -294,7 +293,7 @@ export default function HomeClient({ featuredProducts }: { featuredProducts: Sho
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <FontAwesomeIcon icon={faTiktok} />
+                            <TiktokIcon />
                         </a>
                     </div>
                 </div>

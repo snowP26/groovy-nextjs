@@ -1,8 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebookF, faInstagram, faTiktok } from "@fortawesome/free-brands-svg-icons";
+import { InstagramIcon, FacebookIcon, TiktokIcon } from "./social-icons";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -21,7 +20,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faInstagram} />
+            <InstagramIcon />
           </a>
           <a
             href="https://www.facebook.com/groovyclothing4400"
@@ -30,7 +29,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faFacebookF} />
+            <FacebookIcon />
           </a>
           <a
             href="https://www.tiktok.com/@groovyph"
@@ -39,7 +38,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FontAwesomeIcon icon={faTiktok} />
+            <TiktokIcon />
           </a>
         </div>
       </div>

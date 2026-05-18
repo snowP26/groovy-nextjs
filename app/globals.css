@@ -391,7 +391,7 @@ a {
 
 /* Hero Section */
 .hero {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--header-height));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -430,7 +430,11 @@ a {
 }
 
 .hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  gap: 2.5rem;
   z-index: 2;
   padding: 0 2rem;
 }
@@ -457,9 +461,9 @@ a {
 }
 
 .hero-title-image {
-  width: min(92vw, 820px);
+  display: block;
+  width: min(70vw, 360px);
   height: auto;
-  margin-inline: auto;
 }
 
 .hero-title span {
@@ -487,7 +491,6 @@ a {
 
 .hero-cta {
   opacity: 0;
-  margin-top: 4rem;
   transform: translateY(30px);
   animation: fadeUp 1s var(--transition-smooth) 1.1s forwards;
 }
@@ -3578,3 +3581,44 @@ a {
   color: var(--color-accent);
 }
 
+/* Collection breadcrumb (native — replaced MUI to fix App Router hydration) */
+.collection-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0;
+  background-color: var(--color-cream);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-warm-gray);
+}
+
+@media (min-width: 768px) {
+  .collection-breadcrumb {
+    padding: 2rem 1.75rem 0;
+  }
+}
+
+.collection-breadcrumb-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s var(--transition-smooth);
+}
+
+.collection-breadcrumb-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  color: var(--color-black);
+}
+
+.collection-breadcrumb-sep {
+  color: var(--color-warm-gray);
+}
+
+.collection-breadcrumb-current {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  color: var(--color-black);
+}
