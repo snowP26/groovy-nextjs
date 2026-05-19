@@ -21,6 +21,7 @@ export type ShopifyProduct = {
   handle: string;
   title: string;
   description: string;
+  descriptionHtml: string;
   priceRange: {
     minVariantPrice: { amount: string; currencyCode: string };
   };
@@ -59,6 +60,7 @@ const PRODUCTS_QUERY = `
           handle
           title
           description
+          descriptionHtml
           priceRange {
             minVariantPrice { amount currencyCode }
           }
@@ -91,6 +93,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       handle
       title
       description
+      descriptionHtml
       priceRange {
         minVariantPrice { amount currencyCode }
       }
@@ -213,6 +216,7 @@ function normalizeProduct(node: Record<string, unknown>): ShopifyProduct {
     handle: node.handle as string,
     title: node.title as string,
     description: node.description as string,
+    descriptionHtml: node.descriptionHtml as string,
     priceRange: node.priceRange as ShopifyProduct["priceRange"],
     images: imagesEdges.map((e) => e.node),
     variants: variantsEdges.map((e) => ({

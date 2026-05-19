@@ -358,11 +358,18 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                     <h1 className="product-scaffold-title">{product.title}</h1>
                     <p className="product-scaffold-price"><span className="currency-label">PHP</span> {price.toLocaleString("en-PH")}</p>
 
-                    {product.description ? (
+                    {product.descriptionHtml ? (
                         <ul className="product-scaffold-features">
-                            {product.description.split("\n").filter(Boolean).map((line) => (
-                                <li key={line}>{line}</li>
-                            ))}
+                            {product.descriptionHtml
+                                .replace(/<br\s*\/?>/gi, "\n")
+                                .replace(/<\/p>/gi, "\n")
+                                .replace(/<[^>]+>/g, "")
+                                .split("\n")
+                                .map((s) => s.trim())
+                                .filter(Boolean)
+                                .map((line) => (
+                                    <li key={line}>{line}</li>
+                                ))}
                         </ul>
                     ) : null}
 
