@@ -4,6 +4,8 @@ import CollectionAnimations from "../../components/collection-animations";
 import CollectionBreadcrumb from "../../components/collection-breadcrumb";
 import { getProducts } from "../../../lib/shopify";
 
+export const revalidate = 60;
+
 export default async function CollectionPage() {
   const products = await getProducts(20);
 

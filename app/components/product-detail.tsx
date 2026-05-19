@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import MuiLink from "@mui/material/Link";
@@ -31,6 +31,46 @@ const VARIANT_IMAGE_MAP: Record<string, Record<string, string>> = {
     "graphic-tee":             { White: "graphic_2",    Black: "graphic_1" },
     "embroidered-tee":         { White: "embroid_3",    Black: "embroid_2" },
     "plaid":                   { Longsleeves: "plaid_1", Polo: "plaid_2" },
+};
+
+const SIZE_CHARTS: Record<string, { label: string; unit: string; entries: { size: string; measurements: string }[] }> = {
+    "graphic-tee": {
+        label: "Shirts", unit: "inches (L × W × SL)",
+        entries: [
+            { size: "S",  measurements: "25.5 × 23.5 × 9.5" },
+            { size: "M",  measurements: "26.5 × 24.5 × 10" },
+            { size: "L",  measurements: "27 × 24.5 × 11" },
+            { size: "XL", measurements: "29 × 26.5 × 12" },
+        ],
+    },
+    "embroidered-tee": {
+        label: "Shirts", unit: "inches (L × W × SL)",
+        entries: [
+            { size: "S",  measurements: "25.5 × 23.5 × 9.5" },
+            { size: "M",  measurements: "26.5 × 24.5 × 10" },
+            { size: "L",  measurements: "27 × 24.5 × 11" },
+            { size: "XL", measurements: "29 × 26.5 × 12" },
+        ],
+    },
+    "embroidered-longsleeves": {
+        label: "Waffle Longsleeve", unit: "inches (L × W)",
+        entries: [
+            { size: "S",   measurements: "21.5 × 24.5" },
+            { size: "M",   measurements: "22 × 25.5" },
+            { size: "L",   measurements: "22.5 × 27" },
+            { size: "XL",  measurements: "23.5 × 28.5" },
+            { size: "XXL", measurements: "26 × 29.5" },
+        ],
+    },
+    "plaid": {
+        label: "Plaid", unit: "inches (L × W × SL)",
+        entries: [
+            { size: "S",  measurements: "23 × 22 × 9.5" },
+            { size: "M",  measurements: "25 × 22 × 10" },
+            { size: "L",  measurements: "25.5 × 22.5 × 10.5" },
+            { size: "XL", measurements: "26 × 24 × 11" },
+        ],
+    },
 };
 
 function findImageIndexByStem(
@@ -132,7 +172,10 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
 
     const [quantity, setQuantity] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [sizeChartOpen, setSizeChartOpen] = useState(false);
     const { addToCart } = useCart();
+
+    const sizeChart = SIZE_CHARTS[product.handle] ?? null;
 
     const colorValues = hasColors ? getOptionValues(product.variants, "Color") : [];
     const sizeValues = hasSizes ? getAvailableSizes(product.variants, selectedOptions) : [];
@@ -370,7 +413,14 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
 
                     {hasSizes ? (
                         <div className="product-scaffold-sizes">
-                            <p className="product-scaffold-label">Size</p>
+                            <div className="product-scaffold-size-header">
+                                <p className="product-scaffold-label">Size</p>
+                                {sizeChart ? (
+                                    <button type="button" className="product-size-chart-trigger" onClick={() => setSizeChartOpen(true)}>
+                                        Size Chart
+                                    </button>
+                                ) : null}
+                            </div>
                             <div className="product-scaffold-size-list" role="list" aria-label="Available sizes">
                                 {sizeValues.map((size) => {
                                     const v = findVariantByOptions(product.variants, { ...selectedOptions, Size: size });
@@ -434,6 +484,33 @@ export default function ProductDetail({ product }: { product: ShopifyProduct }) 
                     </div>
                 </div>
             </section>
+
+            {sizeChart && sizeChartOpen ? (
+                <div className="size-chart-overlay" onClick={() => setSizeChartOpen(false)} aria-hidden="true">
+                    <div
+                        className="size-chart-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={`${sizeChart.label} size chart`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button type="button" className="size-chart-modal-close" onClick={() => setSizeChartOpen(false)} aria-label="Close size chart">✕</button>
+                        <h2 className="size-chart-modal-title">{sizeChart.label}</h2>
+                        <p className="product-size-chart-unit">{sizeChart.unit}</p>
+                        <div
+                            className="product-size-chart-grid"
+                            style={{ "--size-chart-cols": sizeChart.entries.length } as CSSProperties}
+                        >
+                            {sizeChart.entries.map(({ size, measurements }) => (
+                                <div key={size} className="product-size-chart-card">
+                                    <span className="product-size-chart-card-size">{size}</span>
+                                    <span className="product-size-chart-card-measurements">{measurements}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ) : null}
         </>
     );
 }

@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getProductByHandle } from "../../../../lib/shopify";
 import ProductDetail from "../../../components/product-detail";
 
+export const revalidate = 60;
+
 const SLUG_ALIAS: Record<string, string> = {
     "graphic-tee-black": "graphic-tee",
     "graphic-tee-white": "graphic-tee",
