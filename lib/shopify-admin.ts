@@ -34,6 +34,7 @@ type DraftOrderInput = {
   email: string;
   note: string;
   tags: string[];
+  shippingLine?: { title: string; price: string };
 };
 
 const DRAFT_ORDER_CREATE = `

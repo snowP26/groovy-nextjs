@@ -3,7 +3,7 @@ import { createDraftOrder } from "../../../lib/shopify-admin";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { contact, shipping, paymentMethod, referenceNumber, lines } = body;
+    const { contact, shipping, paymentMethod, referenceNumber, shippingFee, lines } = body;
 
     const note = [
       `Payment Method: ${paymentMethod}`,
@@ -31,6 +31,9 @@ export async function POST(request: Request) {
       email: contact.email,
       note,
       tags,
+      shippingLine: shippingFee
+        ? { title: "Standard Shipping", price: String(shippingFee) }
+        : undefined,
     });
 
     return Response.json({ orderId: draftOrder.id, orderName: draftOrder.name });
