@@ -3145,6 +3145,53 @@ a {
   text-align: center;
 }
 
+/* Step summary (collapsed customer details on step 2) */
+.checkout-step-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+.checkout-step-summary-info {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.checkout-step-summary-label {
+  color: var(--color-warm-gray);
+  min-width: 4.5rem;
+  flex-shrink: 0;
+}
+
+.checkout-step-summary-value {
+  color: var(--color-text);
+}
+
+.checkout-step-edit-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  color: var(--color-warm-gray);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.checkout-step-edit-btn:hover {
+  color: var(--color-text);
+}
+
 /* Order Summary */
 .checkout-summary {
   padding: 4rem 3rem 4rem 4rem;

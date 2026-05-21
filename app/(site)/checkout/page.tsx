@@ -93,6 +93,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { lines, totalQuantity, clearCart } = useCart();
 
+  const [step, setStep] = useState<1 | 2>(1);
   const [contact, setContact] = useState({ email: "", phone: "" });
   const [shipping, setShipping] = useState({
     firstName: "", lastName: "", address: "", address2: "",
@@ -108,10 +109,16 @@ export default function CheckoutPage() {
 
   const noDigits = (value: string) => !/\d/.test(value);
   const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const validPhone = (value: string) => {
+    const digits = value.replace(/[\s\-()+]/g, "");
+    return /^(63|0)?9\d{9}$/.test(digits);
+  };
 
   const validateField = (name: string, value: string) => {
     if (name === "email" && value && !validEmail(value))
       return "Enter a valid email address.";
+    if (name === "phone" && value && !validPhone(value))
+      return "Enter a valid PH number (e.g. 09XX-XXX-XXXX).";
     if (name === "firstName" && value && !noDigits(value))
       return "First name cannot contain numbers.";
     if (name === "lastName" && value && !noDigits(value))
@@ -124,19 +131,38 @@ export default function CheckoutPage() {
     setFieldErrors((prev) => ({ ...prev, [name]: msg }));
   };
 
+  const isStep1Complete =
+    validEmail(contact.email) &&
+    validPhone(contact.phone) &&
+    noDigits(shipping.firstName) && shipping.firstName.trim() !== "" &&
+    noDigits(shipping.lastName) && shipping.lastName.trim() !== "" &&
+    shipping.address.trim() !== "" &&
+    shipping.province !== "" &&
+    shipping.city.trim() !== "" &&
+    shipping.zip.trim() !== "";
+
+  const handleContinue = () => {
+    const errors: Record<string, string> = {};
+    if (!contact.email) errors.email = "Email is required.";
+    else if (!validEmail(contact.email)) errors.email = "Enter a valid email address.";
+    if (!contact.phone) errors.phone = "Phone number is required.";
+    else if (!validPhone(contact.phone)) errors.phone = "Enter a valid PH number (e.g. 09XX-XXX-XXXX).";
+    if (!shipping.firstName) errors.firstName = "First name is required.";
+    else if (!noDigits(shipping.firstName)) errors.firstName = "First name cannot contain numbers.";
+    if (!shipping.lastName) errors.lastName = "Last name is required.";
+    else if (!noDigits(shipping.lastName)) errors.lastName = "Last name cannot contain numbers.";
+    setFieldErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const subtotal = lines.reduce((sum, l) => sum + parseFloat(l.price) * l.quantity, 0);
   const grandTotal = subtotal + SHIPPING_FEE;
   const selectedPayment = PAYMENT_METHODS.find((m) => m.id === paymentMethod);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const errors: Record<string, string> = {
-      email: validateField("email", contact.email),
-      firstName: validateField("firstName", shipping.firstName),
-      lastName: validateField("lastName", shipping.lastName),
-    };
-    setFieldErrors(errors);
-    if (Object.values(errors).some(Boolean)) return;
     if (!paymentMethod) { setError("Please select a payment method."); return; }
     if (!referenceNumber.trim()) { setError("Please enter your reference number."); return; }
     setError(null);
@@ -194,211 +220,241 @@ export default function CheckoutPage() {
         {/* Left column */}
         <div className="checkout-fields">
 
-          {/* Contact */}
-          <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">
-              <span className="checkout-legend-step">1</span>
-              Contact
-            </legend>
-            <div className="checkout-row">
-              <div className="checkout-field">
-                <input
-                  id="email" type="email" required autoComplete="email"
-                  className={`checkout-input${fieldErrors.email ? " checkout-input--error" : ""}`}
-                  placeholder=" "
-                  value={contact.email}
-                  onChange={(e) => setContact({ ...contact, email: e.target.value })}
-                  onBlur={(e) => handleFieldBlur("email", e.target.value)}
-                />
-                <label className="checkout-label" htmlFor="email">Email</label>
-                {fieldErrors.email ? <span className="checkout-field-error">{fieldErrors.email}</span> : null}
-              </div>
-              <div className="checkout-field">
-                <input
-                  id="phone" type="tel" required autoComplete="tel"
-                  className="checkout-input"
-                  placeholder=" "
-                  value={contact.phone}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^\d+\-\s()]/g, "");
-                    setContact({ ...contact, phone: val });
-                  }}
-                />
-                <label className="checkout-label" htmlFor="phone">Phone</label>
-              </div>
-            </div>
-          </fieldset>
+          {step === 1 ? (
+            <>
+              {/* Contact */}
+              <fieldset className="checkout-fieldset">
+                <legend className="checkout-legend">
+                  <span className="checkout-legend-step">1</span>
+                  Contact
+                </legend>
+                <div className="checkout-row">
+                  <div className="checkout-field">
+                    <input
+                      id="email" type="email" required autoComplete="email"
+                      className={`checkout-input${fieldErrors.email ? " checkout-input--error" : ""}`}
+                      placeholder=" "
+                      value={contact.email}
+                      onChange={(e) => setContact({ ...contact, email: e.target.value })}
+                      onBlur={(e) => handleFieldBlur("email", e.target.value)}
+                    />
+                    <label className="checkout-label" htmlFor="email">Email</label>
+                    {fieldErrors.email ? <span className="checkout-field-error">{fieldErrors.email}</span> : null}
+                  </div>
+                  <div className="checkout-field">
+                    <input
+                      id="phone" type="tel" required autoComplete="tel"
+                      className={`checkout-input${fieldErrors.phone ? " checkout-input--error" : ""}`}
+                      placeholder=" "
+                      value={contact.phone}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^\d+\-\s()]/g, "");
+                        setContact({ ...contact, phone: val });
+                      }}
+                      onBlur={(e) => handleFieldBlur("phone", e.target.value)}
+                    />
+                    <label className="checkout-label" htmlFor="phone">Phone</label>
+                    {fieldErrors.phone ? <span className="checkout-field-error">{fieldErrors.phone}</span> : null}
+                  </div>
+                </div>
+              </fieldset>
 
-          {/* Delivery */}
-          <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">
-              <span className="checkout-legend-step">2</span>
-              Delivery
-            </legend>
-            <div className="checkout-row">
-              <div className="checkout-field">
-                <input
-                  id="firstName" type="text" required autoComplete="given-name"
-                  className={`checkout-input${fieldErrors.firstName ? " checkout-input--error" : ""}`}
-                  placeholder=" "
-                  value={shipping.firstName}
-                  onChange={(e) => setShipping({ ...shipping, firstName: e.target.value.replace(/\d/g, "") })}
-                  onBlur={(e) => handleFieldBlur("firstName", e.target.value)}
-                />
-                <label className="checkout-label" htmlFor="firstName">First Name</label>
-                {fieldErrors.firstName ? <span className="checkout-field-error">{fieldErrors.firstName}</span> : null}
-              </div>
-              <div className="checkout-field">
-                <input
-                  id="lastName" type="text" required autoComplete="family-name"
-                  className={`checkout-input${fieldErrors.lastName ? " checkout-input--error" : ""}`}
-                  placeholder=" "
-                  value={shipping.lastName}
-                  onChange={(e) => setShipping({ ...shipping, lastName: e.target.value.replace(/\d/g, "") })}
-                  onBlur={(e) => handleFieldBlur("lastName", e.target.value)}
-                />
-                <label className="checkout-label" htmlFor="lastName">Last Name</label>
-                {fieldErrors.lastName ? <span className="checkout-field-error">{fieldErrors.lastName}</span> : null}
-              </div>
-            </div>
-            <div className="checkout-field">
-              <input
-                id="address" type="text" required autoComplete="street-address"
-                className="checkout-input"
-                placeholder=" "
-                value={shipping.address}
-                onChange={(e) => setShipping({ ...shipping, address: e.target.value })}
-              />
-              <label className="checkout-label" htmlFor="address">Address</label>
-            </div>
-            <div className="checkout-field">
-              <input
-                id="address2" type="text" autoComplete="address-line2"
-                className="checkout-input"
-                placeholder=" "
-                value={shipping.address2}
-                onChange={(e) => setShipping({ ...shipping, address2: e.target.value })}
-              />
-              <label className="checkout-label" htmlFor="address2">Apartment, suite, etc. (optional)</label>
-            </div>
-            <div className={`checkout-field checkout-field--select${shipping.province ? " checkout-field--selected" : ""}`}>
-              <select
-                id="province" required
-                className="checkout-input checkout-select"
-                value={shipping.province}
-                onChange={(e) => setShipping({ ...shipping, province: e.target.value })}
-              >
-                <option value="" disabled hidden>Province</option>
-                {PH_PROVINCES.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-              <label className="checkout-label" htmlFor="province">Province</label>
-            </div>
-            <div className="checkout-row">
-              <div className="checkout-field">
-                <input
-                  id="city" type="text" required autoComplete="address-level2"
-                  className="checkout-input"
-                  placeholder=" "
-                  value={shipping.city}
-                  onChange={(e) => setShipping({ ...shipping, city: e.target.value.replace(/\d/g, "") })}
-                />
-                <label className="checkout-label" htmlFor="city">City / Municipality</label>
-              </div>
-              <div className="checkout-field">
-                <input
-                  id="zip" type="text" required autoComplete="postal-code"
-                  className="checkout-input"
-                  placeholder=" "
-                  value={shipping.zip}
-                  onChange={(e) => setShipping({ ...shipping, zip: e.target.value })}
-                />
-                <label className="checkout-label" htmlFor="zip">ZIP Code</label>
-              </div>
-            </div>
-          </fieldset>
-
-          {/* Payment */}
-          <fieldset className="checkout-fieldset">
-            <legend className="checkout-legend">
-              <span className="checkout-legend-step">3</span>
-              Payment
-            </legend>
-            <div className="checkout-payment-methods">
-              {PAYMENT_METHODS.map((method) => (
-                <button
-                  key={method.id}
-                  type="button"
-                  className={`checkout-payment-btn${paymentMethod === method.id ? " is-active" : ""}`}
-                  onClick={() => setPaymentMethod(method.id)}
-                >
-                  <span className="checkout-payment-btn-icon">{method.icon}</span>
-                  {method.label}
-                </button>
-              ))}
-            </div>
-
-            {selectedPayment ? (
-              <div className="checkout-payment-details">
-                <p className="checkout-payment-instruction">
-                  Send payment to the following, then enter your reference number below.
-                </p>
-
-                <ul className="checkout-payment-info">
-                  {selectedPayment.details.map((d) => (
-                    <li key={d.label} className="checkout-payment-info-row">
-                      <div className="checkout-payment-info-cell">
-                        <span className="checkout-payment-info-label">{d.label}</span>
-                        <span className="checkout-payment-info-value">{d.value}</span>
-                      </div>
-                      {d.copyable ? <CopyButton value={d.value} /> : null}
-                    </li>
-                  ))}
-                  
-                </ul>
-
-                <button
-                  type="button"
-                  className="checkout-qr-btn"
-                  onClick={() => setQrOpen(true)}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
-                    <path d="M14 14h.01M14 17h.01M17 14h.01M17 17h3M20 14v.01" />
-                  </svg>
-                  Show QR Code
-                </button>
-
+              {/* Delivery */}
+              <fieldset className="checkout-fieldset">
+                <legend className="checkout-legend">
+                  <span className="checkout-legend-step">2</span>
+                  Delivery
+                </legend>
+                <div className="checkout-row">
+                  <div className="checkout-field">
+                    <input
+                      id="firstName" type="text" required autoComplete="given-name"
+                      className={`checkout-input${fieldErrors.firstName ? " checkout-input--error" : ""}`}
+                      placeholder=" "
+                      value={shipping.firstName}
+                      onChange={(e) => setShipping({ ...shipping, firstName: e.target.value.replace(/\d/g, "") })}
+                      onBlur={(e) => handleFieldBlur("firstName", e.target.value)}
+                    />
+                    <label className="checkout-label" htmlFor="firstName">First Name</label>
+                    {fieldErrors.firstName ? <span className="checkout-field-error">{fieldErrors.firstName}</span> : null}
+                  </div>
+                  <div className="checkout-field">
+                    <input
+                      id="lastName" type="text" required autoComplete="family-name"
+                      className={`checkout-input${fieldErrors.lastName ? " checkout-input--error" : ""}`}
+                      placeholder=" "
+                      value={shipping.lastName}
+                      onChange={(e) => setShipping({ ...shipping, lastName: e.target.value.replace(/\d/g, "") })}
+                      onBlur={(e) => handleFieldBlur("lastName", e.target.value)}
+                    />
+                    <label className="checkout-label" htmlFor="lastName">Last Name</label>
+                    {fieldErrors.lastName ? <span className="checkout-field-error">{fieldErrors.lastName}</span> : null}
+                  </div>
+                </div>
                 <div className="checkout-field">
                   <input
-                    id="refNum" type="text" required
+                    id="address" type="text" required autoComplete="street-address"
                     className="checkout-input"
                     placeholder=" "
-                    value={referenceNumber}
-                    onChange={(e) => setReferenceNumber(e.target.value)}
+                    value={shipping.address}
+                    onChange={(e) => setShipping({ ...shipping, address: e.target.value })}
                   />
-                  <label className="checkout-label" htmlFor="refNum">
-                    Reference / Transaction Number <span aria-hidden="true" className="checkout-required-star">*</span>
-                  </label>
+                  <label className="checkout-label" htmlFor="address">Address</label>
                 </div>
+                <div className="checkout-field">
+                  <input
+                    id="address2" type="text" autoComplete="address-line2"
+                    className="checkout-input"
+                    placeholder=" "
+                    value={shipping.address2}
+                    onChange={(e) => setShipping({ ...shipping, address2: e.target.value })}
+                  />
+                  <label className="checkout-label" htmlFor="address2">Apartment, suite, etc. (optional)</label>
+                </div>
+                <div className={`checkout-field checkout-field--select${shipping.province ? " checkout-field--selected" : ""}`}>
+                  <select
+                    id="province" required
+                    className="checkout-input checkout-select"
+                    value={shipping.province}
+                    onChange={(e) => setShipping({ ...shipping, province: e.target.value })}
+                  >
+                    <option value="" disabled hidden>Province</option>
+                    {PH_PROVINCES.map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                  <label className="checkout-label" htmlFor="province">Province</label>
+                </div>
+                <div className="checkout-row">
+                  <div className="checkout-field">
+                    <input
+                      id="city" type="text" required autoComplete="address-level2"
+                      className="checkout-input"
+                      placeholder=" "
+                      value={shipping.city}
+                      onChange={(e) => setShipping({ ...shipping, city: e.target.value.replace(/\d/g, "") })}
+                    />
+                    <label className="checkout-label" htmlFor="city">City / Municipality</label>
+                  </div>
+                  <div className="checkout-field">
+                    <input
+                      id="zip" type="text" required autoComplete="postal-code"
+                      className="checkout-input"
+                      placeholder=" "
+                      value={shipping.zip}
+                      onChange={(e) => setShipping({ ...shipping, zip: e.target.value })}
+                    />
+                    <label className="checkout-label" htmlFor="zip">ZIP Code</label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div className="checkout-submit-group">
+                <button type="button" className="checkout-submit-btn" onClick={handleContinue} disabled={!isStep1Complete}>
+                  Continue to Payment
+                </button>
               </div>
-            ) : null}
-          </fieldset>
+            </>
+          ) : (
+            <>
+              {/* Customer details summary */}
+              <div className="checkout-step-summary">
+                <div className="checkout-step-summary-info">
+                  <span className="checkout-step-summary-label">Contact</span>
+                  <span className="checkout-step-summary-value">{contact.email} · {contact.phone}</span>
+                </div>
+                <div className="checkout-step-summary-info">
+                  <span className="checkout-step-summary-label">Ship to</span>
+                  <span className="checkout-step-summary-value">
+                    {shipping.address}{shipping.address2 ? `, ${shipping.address2}` : ""}, {shipping.city}, {shipping.province} {shipping.zip}
+                  </span>
+                </div>
+                <button type="button" className="checkout-step-edit-btn" onClick={() => setStep(1)}>
+                  Edit
+                </button>
+              </div>
 
-          {error ? <p className="checkout-error" role="alert">{error}</p> : null}
+              {/* Payment */}
+              <fieldset className="checkout-fieldset">
+                <legend className="checkout-legend">
+                  <span className="checkout-legend-step">3</span>
+                  Payment
+                </legend>
+                <div className="checkout-payment-methods">
+                  {PAYMENT_METHODS.map((method) => (
+                    <button
+                      key={method.id}
+                      type="button"
+                      className={`checkout-payment-btn${paymentMethod === method.id ? " is-active" : ""}`}
+                      onClick={() => setPaymentMethod(method.id)}
+                    >
+                      <span className="checkout-payment-btn-icon">{method.icon}</span>
+                      {method.label}
+                    </button>
+                  ))}
+                </div>
 
-          <div className="checkout-submit-group">
-            <button type="submit" className="checkout-submit-btn" disabled={isSubmitting}>
-              {isSubmitting ? "Placing Order…" : "Complete Order"}
-            </button>
-            <p className="checkout-trust-line">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              Secure order · Payment verified manually by our team
-            </p>
-          </div>
+                {selectedPayment ? (
+                  <div className="checkout-payment-details">
+                    <p className="checkout-payment-instruction">
+                      Send payment to the following, then enter your reference number below.
+                    </p>
+
+                    <ul className="checkout-payment-info">
+                      {selectedPayment.details.map((d) => (
+                        <li key={d.label} className="checkout-payment-info-row">
+                          <div className="checkout-payment-info-cell">
+                            <span className="checkout-payment-info-label">{d.label}</span>
+                            <span className="checkout-payment-info-value">{d.value}</span>
+                          </div>
+                          {d.copyable ? <CopyButton value={d.value} /> : null}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      type="button"
+                      className="checkout-qr-btn"
+                      onClick={() => setQrOpen(true)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+                        <path d="M14 14h.01M14 17h.01M17 14h.01M17 17h3M20 14v.01" />
+                      </svg>
+                      Show QR Code
+                    </button>
+
+                    <div className="checkout-field">
+                      <input
+                        id="refNum" type="text" required
+                        className="checkout-input"
+                        placeholder=" "
+                        value={referenceNumber}
+                        onChange={(e) => setReferenceNumber(e.target.value)}
+                      />
+                      <label className="checkout-label" htmlFor="refNum">
+                        Reference / Transaction Number <span aria-hidden="true" className="checkout-required-star">*</span>
+                      </label>
+                    </div>
+                  </div>
+                ) : null}
+              </fieldset>
+
+              {error ? <p className="checkout-error" role="alert">{error}</p> : null}
+
+              <div className="checkout-submit-group">
+                <button type="submit" className="checkout-submit-btn" disabled={isSubmitting || !paymentMethod || !referenceNumber.trim()}>
+                  {isSubmitting ? "Placing Order…" : "Complete Order"}
+                </button>
+                <p className="checkout-trust-line">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Secure order · Payment verified manually by our team
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Right column — order summary */}
