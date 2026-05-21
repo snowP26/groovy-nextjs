@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
   const grandTotal = subtotal + SHIPPING_FEE;
   const selectedPayment = PAYMENT_METHODS.find((m) => m.id === paymentMethod);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!paymentMethod) { setError("Please select a payment method."); return; }
     if (!referenceNumber.trim()) { setError("Please enter your reference number."); return; }
@@ -220,6 +220,20 @@ export default function CheckoutPage() {
         {/* Left column */}
         <div className="checkout-fields">
 
+          {/* Step progress indicator */}
+          <div className="checkout-progress" aria-label="Checkout progress">
+            <div className={`checkout-progress-step${step > 1 ? " is-done" : " is-active"}`}>
+              <span className="checkout-progress-dot">{step > 1 ? "✓" : "1"}</span>
+              <span className="checkout-progress-label">Customer Details</span>
+            </div>
+            <div className={`checkout-progress-connector${step > 1 ? " is-done" : ""}`} aria-hidden="true" />
+            <div className={`checkout-progress-step${step === 2 ? " is-active" : ""}`}>
+              <span className="checkout-progress-dot">2</span>
+              <span className="checkout-progress-label">Payment</span>
+            </div>
+          </div>
+
+          <div key={step} className="checkout-step-content">
           {step === 1 ? (
             <>
               {/* Contact */}
@@ -455,6 +469,7 @@ export default function CheckoutPage() {
               </div>
             </>
           )}
+          </div>
         </div>
 
         {/* Right column — order summary */}

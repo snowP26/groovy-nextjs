@@ -2704,8 +2704,8 @@ a {
   padding: 3rem 4rem;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  background: #fff;
+  gap: 1.75rem;
+  background: var(--color-surface);
   border-right: 1px solid var(--color-border);
 }
 
@@ -2811,8 +2811,8 @@ a {
 
 .checkout-input:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: var(--color-black);
+  box-shadow: 0 0 0 3px rgba(196, 167, 125, 0.18);
 }
 
 /* Select */
@@ -3129,8 +3129,10 @@ a {
 }
 
 .checkout-submit-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.38;
   cursor: not-allowed;
+  background: var(--color-warm-gray);
+  border-color: var(--color-warm-gray);
 }
 
 .checkout-trust-line {
@@ -3143,6 +3145,88 @@ a {
   letter-spacing: 0.1em;
   color: var(--color-warm-gray);
   text-align: center;
+}
+
+/* Step progress indicator */
+.checkout-progress {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.checkout-progress-step {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-warm-gray);
+  transition: color 0.25s;
+  white-space: nowrap;
+}
+
+.checkout-progress-step.is-active {
+  color: var(--color-black);
+}
+
+.checkout-progress-step.is-done {
+  color: var(--color-black);
+}
+
+.checkout-progress-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-warm-gray);
+  font-size: 0.63rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+}
+
+.checkout-progress-step.is-active .checkout-progress-dot,
+.checkout-progress-step.is-done .checkout-progress-dot {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.checkout-progress-connector {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+  margin: 0 0.875rem;
+  transition: background 0.35s;
+}
+
+.checkout-progress-connector.is-done {
+  background: var(--color-black);
+}
+
+/* Step content enter animation */
+@keyframes checkout-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.checkout-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  animation: checkout-step-in 0.22s ease-out;
 }
 
 /* Step summary (collapsed customer details on step 2) */
@@ -3170,7 +3254,7 @@ a {
 }
 
 .checkout-step-summary-value {
-  color: var(--color-text);
+  color: var(--color-black);
 }
 
 .checkout-step-edit-btn {
@@ -3224,7 +3308,7 @@ a {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #2563eb;
+  color: var(--color-black);
 }
 
 .checkout-summary-toggle-right {
@@ -3241,7 +3325,7 @@ a {
 
 .checkout-summary-chevron {
   transition: transform 0.25s var(--transition-smooth);
-  color: #2563eb;
+  color: var(--color-warm-gray);
 }
 
 .checkout-summary-chevron.is-open {
@@ -3399,20 +3483,25 @@ a {
 }
 
 .checkout-success-icon {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--color-black);
-  color: var(--color-surface);
+  background: transparent;
+  border: 1.5px solid var(--color-black);
+  color: var(--color-black);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
 .checkout-success-title {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-family: var(--font-allura);
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--color-black);
 }
 
 .checkout-success-order {
@@ -3466,7 +3555,7 @@ a {
 }
 
 .checkout-success-step-divider {
-  width: 32px;
+  width: 40px;
   height: 1px;
   background: var(--color-border);
   flex-shrink: 0;
@@ -3552,6 +3641,10 @@ a {
   .checkout-fields {
     border-right: none;
     padding: 1.5rem 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .checkout-step-content {
     gap: 1.75rem;
   }
 
